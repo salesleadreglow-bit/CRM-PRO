@@ -419,6 +419,8 @@ body {
 .view-section {
     display: none;
     animation: slideUp 0.5s ease forwards;
+    max-width: 1400px;
+    margin: 0 auto;
 }
 
 .view-section.active {
