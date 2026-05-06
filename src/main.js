@@ -8,8 +8,8 @@ let state = {
     transactions: [],
     rfmData: [],
     settings: {
-        supabaseUrl: localStorage.getItem('supabaseUrl') || '',
-        supabaseKey: localStorage.getItem('supabaseKey') || '',
+        supabaseUrl: localStorage.getItem('supabaseUrl') || 'https://vedzvlsjxmokairstjou.supabase.co',
+        supabaseKey: localStorage.getItem('supabaseKey') || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZlZHp2bHNqeG1va2FpcnN0am91Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgwNDE5MDQsImV4cCI6MjA5MzYxNzkwNH0.h5d35pLcy1bcqcevXq_Hxtv423zdL4_9XApoLVUV9vQ',
         r3: parseInt(localStorage.getItem('r3')) || 30,
         r2: parseInt(localStorage.getItem('r2')) || 90,
         f3: parseInt(localStorage.getItem('f3')) || 10,
@@ -87,15 +87,18 @@ document.addEventListener('DOMContentLoaded', async () => {
             // Listen for Password Recovery
             client.auth.onAuthStateChange((event, session) => {
                 if (event === 'PASSWORD_RECOVERY') {
-                    document.getElementById('update-password-overlay').classList.add('active');
+                    if (document.getElementById('update-password-overlay')) {
+                        document.getElementById('update-password-overlay').classList.add('active');
+                    }
                 }
             });
 
             await checkAuth();
         } else {
+            // Jika benar-benar tidak ada URL/Key (biasanya saat pertama kali setup lokal)
             hideLoader();
-            document.getElementById('login-overlay').classList.remove('active');
             switchView('settings-view');
+            showToast("Silakan masukkan konfigurasi Supabase Anda.", "error");
         }
     } catch (err) {
         console.error("Initialization error:", err);
