@@ -45,17 +45,13 @@ export function calculateRFM(transactions, settings) {
         else if (c.totalRevenue >= settings.m2) mScore = 2;
 
         const rfmScoring = `${rScore}${fScore}${mScore}`;
+        const totalScore = rScore + fScore + mScore;
         
-        let segmentation = 'Other';
-        const coreScores = ["333", "332", "323", "322", "331", "321"];
-        const growthScores = ["313", "312", "233", "311", "211"];
-        const passiveScores = ["232", "231", "221", "223", "222", "213", "212"];
-        const churnScores = ["133", "132", "131", "123", "122", "121", "113", "112", "111"];
-
-        if (coreScores.includes(rfmScoring)) segmentation = 'Core';
-        else if (growthScores.includes(rfmScoring)) segmentation = 'Growth';
-        else if (passiveScores.includes(rfmScoring)) segmentation = 'Passive';
-        else if (churnScores.includes(rfmScoring)) segmentation = 'Churn';
+        let segmentation = 'Churn';
+        if (totalScore >= 8) segmentation = 'Core';
+        else if (totalScore >= 6) segmentation = 'Growth';
+        else if (totalScore >= 4) segmentation = 'Passive';
+        else segmentation = 'Churn';
 
         return {
             customer_id: c.id,
