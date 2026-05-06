@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CRM PRO - Dashboard</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Phosphor Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <link rel="stylesheet" href="/src/style.css">
+</head>
+<body class="dark-theme">
+    <!-- Login Overlay -->
+    <div id="login-overlay" class="login-overlay active">
+        <div class="login-card glass">
+            <!-- Login Mode -->
+            <div id="auth-login-mode">
+                <div class="login-header">
+                    <div class="logo-icon">
+                        <i class="ph-fill ph-lock-key"></i>
+                    </div>
+                    <h2>CRM PRO Access</h2>
+                    <p>Silakan login untuk mengakses dashboard.</p>
+                </div>
+                <form id="login-form">
+                    <div class="input-group">
+                        <label>Email Address</label>
+                        <input type="email" id="login-email" placeholder="nama@email.com" required>
+                    </div>
+                    <div class="input-group">
+                        <label>Password</label>
+                        <input type="password" id="login-password" placeholder="••••••••" required>
+                        <div style="text-align: right; margin-top: 8px;">
+                            <a href="#" id="go-to-reset" style="font-size: 12px; color: var(--text-dim); text-decoration: none;">Lupa Password?</a>
+                        </div>
+                    </div>
+                    <button type="submit" class="action-btn primary w-100">
+                        <i class="ph ph-sign-in"></i>
+                        Login ke Dashboard
+                    </button>
+                </form>
+                <p class="auth-toggle">Belum punya akun? <a href="#" id="go-to-signup">Daftar Sekarang</a></p>
+            </div>
+
+            <!-- Sign Up Mode (Hidden by default) -->
+            <div id="auth-signup-mode" class="hidden">
+                <div class="login-header">
+                    <div class="logo-icon" style="background: linear-gradient(135deg, var(--secondary), var(--primary))">
+                        <i class="ph-fill ph-user-plus"></i>
+                    </div>
+                    <h2>Buat Akun Baru</h2>
+                    <p>Daftar untuk mulai mengelola CRM Anda.</p>
+                </div>
+                <form id="signup-form">
+                    <div class="input-group">
+                        <label>Email Address</label>
+                        <input type="email" id="signup-email" placeholder="nama@email.com" required>
+                    </div>
+                    <div class="input-group">
+                        <label>Create Password</label>
+                        <input type="password" id="signup-password" placeholder="Min. 6 karakter" required minlength="6">
+                    </div>
+                    <button type="submit" class="action-btn secondary w-100" style="background: var(--primary)">
+                        <i class="ph ph-user-plus"></i>
+                        Daftar Akun
+                    </button>
+                </form>
+                <p class="auth-toggle">Sudah punya akun? <a href="#" id="go-to-login">Kembali Login</a></p>
+            </div>
+            
+            <p id="auth-error" class="status-msg danger"></p>
+        </div>
+    </div>
+
+    <!-- Update Password Overlay -->
+    <div id="update-password-overlay" class="login-overlay">
+        <div class="login-card glass">
+            <div class="login-header">
+                <div class="logo-icon" style="background: var(--core)">
+                    <i class="ph-fill ph-key"></i>
+                </div>
+                <h2>Ganti Password Baru</h2>
+                <p>Silakan masukkan password baru Anda.</p>
+            </div>
+            <form id="update-password-form">
+                <div class="input-group">
+                    <label>Password Baru</label>
+                    <input type="password" id="new-password" placeholder="Min. 6 karakter" required minlength="6">
+                </div>
+                <button type="submit" class="action-btn primary w-100">
+                    <i class="ph ph-check"></i>
+                    Simpan Password Baru
+                </button>
+            </form>
+            <p id="update-password-error" class="status-msg danger"></p>
+        </div>
+    </div>
+
+    <!-- Loader Overlay -->
+    <div id="loader" class="loader-overlay active">
+        <div class="glass-loader">
+            <div class="spinner"></div>
+            <p>Menginisialisasi CRM PRO...</p>
+        </div>
+    </div>
+
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo-wrapper">
+                    <div class="logo-icon">
+                        <i class="ph-fill ph-rocket-launch"></i>
+                    </div>
+                    <div class="logo-text">
+                        <span class="logo-main">CRM PRO</span>
+                        <span class="logo-sub">Enterprise Edition</span>
+                    </div>
+                </div>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <div class="nav-group">
+                    <span class="nav-label">Main Menu</span>
+                    <ul>
+                        <li class="nav-item active" data-target="dashboard-view">
+                            <i class="ph ph-squares-four"></i>
+                            <span>Dashboard RFM</span>
+                        </li>
+                        <li class="nav-item" data-target="upload-view">
+                            <i class="ph ph-cloud-arrow-up"></i>
+                            <span>Upload Data</span>
+                        </li>
+                        <li class="nav-item" data-target="broadcast-view">
+                            <i class="ph ph-whatsapp-logo"></i>
+                            <span>Master Broadcast</span>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="nav-group">
+                    <span class="nav-label">System</span>
+                    <ul>
+                        <li class="nav-item" data-target="settings-view">
+                            <i class="ph ph-gear-six"></i>
+                            <span>Pengaturan</span>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="connection-status" id="db-status">
+                    <div class="status-dot offline"></div>
+                    <span>Supabase Offline</span>
+                </div>
+                <button id="btn-refresh" class="refresh-btn">
+                    <i class="ph ph-arrows-clockwise"></i>
+                    <span>Sinkronkan Data</span>
+                </button>
+                <button id="btn-logout" class="refresh-btn" style="margin-top: 8px; color: var(--churn); border-color: rgba(239, 68, 68, 0.2);">
+                    <i class="ph ph-sign-out"></i>
+                    <span>Keluar Sistem</span>
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="top-bar">
+                <div class="header-left">
+                    <h1 id="view-title">Dashboard RFM</h1>
+                    <p class="view-subtitle" id="view-subtitle">Analisis segmentasi pelanggan secara real-time.</p>
+                </div>
+                <div class="header-right">
+                    <div class="user-profile">
+                        <div class="user-info">
+                            <span class="user-name">Administrator</span>
+                            <span class="user-role">Super User</span>
+                        </div>
+                        <div class="avatar">A</div>
+                    </div>
+                </div>
+            </header>
+
+            <div class="content-scroll">
+                <!-- Dashboard View -->
+                <section id="dashboard-view" class="view-section active">
+                    <div class="stats-grid">
+                        <div class="stat-card glass" data-segment="Core">
+                            <div class="stat-icon-box core">
+                                <i class="ph ph-star-four"></i>
+                            </div>
+                            <div class="stat-content">
+                                <span class="stat-label">Segmen Core</span>
+                                <h2 class="stat-value" id="count-core">0</h2>
+                                <span class="stat-trend positive"><i class="ph ph-trend-up"></i> Best Value</span>
+                            </div>
+                        </div>
+                        <div class="stat-card glass" data-segment="Growth">
+                            <div class="stat-icon-box growth">
+                                <i class="ph ph-chart-line-up"></i>
+                            </div>
+                            <div class="stat-content">
+                                <span class="stat-label">Segmen Growth</span>
+                                <h2 class="stat-value" id="count-growth">0</h2>
+                                <span class="stat-trend neutral"><i class="ph ph-arrows-left-right"></i> Potential</span>
+                            </div>
+                        </div>
+                        <div class="stat-card glass" data-segment="Passive">
+                            <div class="stat-icon-box passive">
+                                <i class="ph ph-clock-countdown"></i>
+                            </div>
+                            <div class="stat-content">
+                                <span class="stat-label">Segmen Passive</span>
+                                <h2 class="stat-value" id="count-passive">0</h2>
+                                <span class="stat-trend warning"><i class="ph ph-trend-down"></i> Re-engage</span>
+                            </div>
+                        </div>
+                        <div class="stat-card glass" data-segment="Churn">
+                            <div class="stat-icon-box churn">
+                                <i class="ph ph-warning"></i>
+                            </div>
+                            <div class="stat-content">
+                                <span class="stat-label">Segmen Churn</span>
+                                <h2 class="stat-value" id="count-churn">0</h2>
+                                <span class="stat-trend danger"><i class="ph ph-shield-warning"></i> High Risk</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="data-card glass">
+                        <div class="card-header">
+                            <div class="header-title">
+                                <h2>Pelanggan Tersegmentasi</h2>
+                                <p>Menampilkan analisis RFM dari database Supabase.</p>
+                            </div>
+                            <div class="header-actions">
+                                <div class="search-box">
+                                    <i class="ph ph-magnifying-glass"></i>
+                                    <input type="text" id="search-rfm" placeholder="Cari pelanggan...">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="table-container">
+                            <table id="table-rfm">
+                                <thead>
+                                    <tr>
+                                        <th>Pelanggan</th>
+                                        <th>Last Order</th>
+                                        <th>Revenue</th>
+                                        <th>Freq</th>
+                                        <th>Recency (Hari)</th>
+                                        <th>R</th>
+                                        <th>F</th>
+                                        <th>M</th>
+                                        <th>Score</th>
+                                        <th>Segmentasi</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- Dynamic Rows -->
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="card-footer">
+                            <span id="rfm-table-info">Menampilkan 0 data</span>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Upload View -->
+                <section id="upload-view" class="view-section">
+                    <div class="upload-container glass">
+                        <div class="upload-header">
+                            <i class="ph ph-file-csv"></i>
+                            <h2>Incremental Upload</h2>
+                            <p>Unggah file transaksi (CSV) untuk memperbarui data CRM secara otomatis.</p>
+                        </div>
+                        <div class="drop-zone" id="drop-zone">
+                            <input type="file" id="file-input" accept=".csv" hidden>
+                            <i class="ph ph-upload-simple"></i>
+                            <p>Tarik file ke sini atau <span>klik untuk memilih</span></p>
+                            <span class="file-hint">Mendukung format CSV (Kolom: customer_id, customer_name, phone_number, gross_sales, created_at)</span>
+                        </div>
+                        <div id="upload-progress-container" class="upload-progress hidden">
+                            <div class="progress-info">
+                                <span id="progress-status">Memproses file...</span>
+                                <span id="progress-percent">0%</span>
+                            </div>
+                            <div class="progress-bar-wrapper">
+                                <div class="progress-bar-fill" id="progress-bar"></div>
+                            </div>
+                        </div>
+                        <div id="upload-results" class="upload-results hidden">
+                            <!-- Results will be shown here -->
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Broadcast View -->
+                <section id="broadcast-view" class="view-section">
+                    <div class="data-card glass">
+                        <div class="card-header">
+                            <div class="header-title">
+                                <h2>Master Broadcast WhatsApp</h2>
+                                <p>Filter pelanggan dan ekspor data untuk kampanye WhatsApp.</p>
+                            </div>
+                            <div class="header-actions">
+                                <select id="filter-segment-broadcast" class="glass-select">
+                                    <option value="all">Semua Segmen</option>
+                                    <option value="Core">Core</option>
+                                    <option value="Growth">Growth</option>
+                                    <option value="Passive">Passive</option>
+                                    <option value="Churn">Churn</option>
+                                </select>
+                                <button id="btn-export-excel" class="action-btn primary">
+                                    <i class="ph ph-file-xls"></i>
+                                    Ekspor Excel
+                                </button>
+                            </div>
+                        </div>
+                        <div class="table-container">
+                            <table id="table-broadcast">
+                                <thead>
+                                    <tr>
+                                        <th>Nama</th>
+                                        <th>ID Pelanggan</th>
+                                        <th>No. WhatsApp</th>
+                                        <th>Segmentasi</th>
+                                        <th>Strategi Rekomendasi</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- Dynamic Rows -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Settings View -->
+                <section id="settings-view" class="view-section">
+                    <div class="settings-grid">
+                        <!-- Supabase Config -->
+                        <div class="settings-card glass">
+                            <div class="card-header">
+                                <i class="ph ph-database"></i>
+                                <h3>Konfigurasi Supabase</h3>
+                            </div>
+                            <div class="card-body">
+                                <div class="input-group">
+                                    <label>Supabase URL</label>
+                                    <input type="text" id="config-supabase-url" placeholder="https://xyz.supabase.co">
+                                </div>
+                                <div class="input-group">
+                                    <label>Supabase Anon Key</label>
+                                    <input type="password" id="config-supabase-key" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...">
+                                </div>
+                                <button id="btn-test-db" class="action-btn secondary">Test Koneksi</button>
+                                <p class="status-msg" id="db-test-msg"></p>
+                            </div>
+                        </div>
+
+                        <!-- RFM Thresholds -->
+                        <div class="settings-card glass">
+                            <div class="card-header">
+                                <i class="ph ph-sliders"></i>
+                                <h3>Ambang Batas RFM</h3>
+                            </div>
+                            <div class="card-body">
+                                <div class="threshold-rows">
+                                    <div class="row-group">
+                                        <h4>Recency (Hari)</h4>
+                                        <div class="inputs">
+                                            <div class="input-inline">
+                                                <label>Score 3 (Max)</label>
+                                                <input type="number" id="threshold-r3" value="30">
+                                            </div>
+                                            <div class="input-inline">
+                                                <label>Score 2 (Max)</label>
+                                                <input type="number" id="threshold-r2" value="90">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row-group">
+                                        <h4>Frequency (Order)</h4>
+                                        <div class="inputs">
+                                            <div class="input-inline">
+                                                <label>Score 3 (Min)</label>
+                                                <input type="number" id="threshold-f3" value="10">
+                                            </div>
+                                            <div class="input-inline">
+                                                <label>Score 2 (Min)</label>
+                                                <input type="number" id="threshold-f2" value="3">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row-group">
+                                        <h4>Monetary (Rupiah)</h4>
+                                        <div class="inputs">
+                                            <div class="input-inline">
+                                                <label>Score 3 (Min)</label>
+                                                <input type="number" id="threshold-m3" value="1000000">
+                                            </div>
+                                            <div class="input-inline">
+                                                <label>Score 2 (Min)</label>
+                                                <input type="number" id="threshold-m2" value="250000">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Custom Strategies -->
+                        <div class="settings-card glass" style="grid-column: span 2;">
+                            <div class="card-header">
+                                <i class="ph ph-lightbulb"></i>
+                                <h3>Strategi Segmentasi</h3>
+                            </div>
+                            <div class="card-body">
+                                <div class="strategies-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+                                    <div class="input-group">
+                                        <label>Strategi Core</label>
+                                        <textarea id="strat-core" class="glass-textarea" rows="2"></textarea>
+                                    </div>
+                                    <div class="input-group">
+                                        <label>Strategi Growth</label>
+                                        <textarea id="strat-growth" class="glass-textarea" rows="2"></textarea>
+                                    </div>
+                                    <div class="input-group">
+                                        <label>Strategi Passive</label>
+                                        <textarea id="strat-passive" class="glass-textarea" rows="2"></textarea>
+                                    </div>
+                                    <div class="input-group">
+                                        <label>Strategi Churn</label>
+                                        <textarea id="strat-churn" class="glass-textarea" rows="2"></textarea>
+                                    </div>
+                                </div>
+                                <div class="settings-footer" style="margin-top: 24px; display: flex; justify-content: flex-end;">
+                                    <button id="btn-save-settings" class="action-btn primary">Simpan Konfigurasi</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <!-- Toast Container -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <!-- Custom Modal -->
+    <div id="custom-modal" class="modal-overlay">
+        <div class="modal-card glass">
+            <div id="modal-icon" class="modal-icon"></div>
+            <h3 id="modal-title">Konfirmasi</h3>
+            <p id="modal-message">Apakah Anda yakin?</p>
+            <div class="modal-actions">
+                <button id="modal-cancel" class="action-btn secondary">Batal</button>
+                <button id="modal-confirm" class="action-btn primary">Ya, Lanjutkan</button>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="/src/main.js"></script>
+</body>
+</html>
