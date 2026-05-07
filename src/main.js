@@ -16,8 +16,8 @@ let state = {
         f3: parseInt(localStorage.getItem('f-core')) || 10,
         f2: parseInt(localStorage.getItem('f-growth')) || 3,
         f1: parseInt(localStorage.getItem('f-passive')) || 1,
-        m3: parseInt(localStorage.getItem('m3')) || 1000000,
-        m2: parseInt(localStorage.getItem('m2')) || 250000,
+        m3: parseInt(localStorage.getItem('m-core')) || 1000000,
+        m2: parseInt(localStorage.getItem('m-growth')) || 250000,
         stratCore: localStorage.getItem('msg-core') || 'VIP Program & Loyalty Reward - Berikan akses eksklusif dan apresiasi personal.',
         stratGrowth: localStorage.getItem('msg-growth') || 'Onboarding & Upselling - Tawarkan produk komplementer (bundling) dan edukasi.',
         stratPassive: localStorage.getItem('msg-passive') || 'Reminder & Retargeting - Kirim pengingat stok habis dan promo terbatas.',
@@ -364,6 +364,8 @@ function loadSettingsIntoUI() {
     document.getElementById('f-core').value = s.f3;
     document.getElementById('f-growth').value = s.f2;
     document.getElementById('f-passive').value = s.f1;
+    document.getElementById('m-core').value = s.m3;
+    document.getElementById('m-growth').value = s.m2;
     document.getElementById('msg-core').value = s.stratCore;
     document.getElementById('msg-growth').value = s.stratGrowth;
     document.getElementById('msg-passive').value = s.stratPassive;
@@ -377,6 +379,8 @@ function saveSettings() {
     localStorage.setItem('f-core', document.getElementById('f-core').value);
     localStorage.setItem('f-growth', document.getElementById('f-growth').value);
     localStorage.setItem('f-passive', document.getElementById('f-passive').value);
+    localStorage.setItem('m-core', document.getElementById('m-core').value);
+    localStorage.setItem('m-growth', document.getElementById('m-growth').value);
     localStorage.setItem('msg-core', document.getElementById('msg-core').value);
     localStorage.setItem('msg-growth', document.getElementById('msg-growth').value);
     localStorage.setItem('msg-passive', document.getElementById('msg-passive').value);
