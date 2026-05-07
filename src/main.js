@@ -295,9 +295,21 @@ function setupEventListeners() {
     document.getElementById('btn-export-excel').addEventListener('click', exportToExcel);
 
     // Logout
-    document.getElementById('btn-logout').addEventListener('click', () => {
-        loginOverlay.classList.add('active');
-        showToast('Berhasil logout');
+    document.getElementById('btn-logout').addEventListener('click', async () => {
+        showLoader('Sedang logout...');
+        try {
+            await signOut();
+            state.transactions = [];
+            state.rfmData = [];
+            renderDashboard();
+            renderBroadcast();
+            loginOverlay.classList.add('active');
+            showToast('Berhasil logout');
+        } catch (err) {
+            console.error("Logout error:", err);
+        } finally {
+            hideLoader();
+        }
     });
 
     // Upload
