@@ -1,7 +1,7 @@
 import Papa from 'papaparse';
 import { upsertTransactions } from './supabase';
 
-export async function processCSV(file, onProgress) {
+export async function processCSV(file, onProgress, userId) {
     return new Promise((resolve, reject) => {
         Papa.parse(file, {
             header: true,
@@ -32,7 +32,8 @@ export async function processCSV(file, onProgress) {
                         phone_number: String(phone || ''),
                         gross_sales: parseFloat(String(sales || '0').replace(/[^0-9.-]+/g, '')) || 0,
                         created_at: date ? new Date(date).toISOString() : new Date().toISOString(),
-                        order_id: oid || `${cid}-${new Date(date || Date.now()).getTime()}-${index}`
+                        order_id: oid || `${cid}-${new Date(date || Date.now()).getTime()}-${index}`,
+                        user_id: userId // Tambahkan identitas pemilik data
                     };
                 });
 

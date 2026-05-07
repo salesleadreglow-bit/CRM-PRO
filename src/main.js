@@ -657,11 +657,14 @@ async function handleFileUpload(file) {
     progressContainer.classList.remove('hidden');
     
     try {
+        const { data: { session } } = await getSession();
+        const userId = session ? session.user.id : null;
+        
         const result = await processCSV(file, (p) => {
             progressBar.style.width = `${p.percent}%`;
             progressStatus.textContent = p.status;
             progressPercent.textContent = `${p.percent}%`;
-        });
+        }, userId);
         
         if (result.errors && result.errors.length > 0) {
             showToast('Selesai dengan beberapa masalah', 'error');
