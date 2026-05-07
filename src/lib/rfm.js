@@ -44,29 +44,29 @@ export function calculateRFM(transactions, settings) {
         if (c.totalRevenue >= settings.m3) mScore = 3;
         else if (c.totalRevenue >= settings.m2) mScore = 2;
 
-        const rfmScoring = `${rScore}${fScore}${mScore}`;
-        const totalScore = rScore + fScore + mScore;
-        
-        let segmentation = 'Churn';
+        // LOGIKA BARU BERBASIS PERILAKU (RULE FINAL)
+        let segmentation = 'Passive';
+        let character = '';
 
-        // 1. Prioritas CHURN: Jika R = 1 (Lama tidak transaksi)
+        // 1. CHURN (Prioritas Utama): R = 1
         if (rScore === 1) {
             segmentation = 'Churn';
+            character = 'Lama tidak transaksi, risiko hilang tinggi, tidak aktif.';
         }
-        // 2. CORE: Sangat aktif (R=3) dan sudah repeat order (F>=2)
+        // 2. CORE: R = 3 dan F >= 2
         else if (rScore === 3 && fScore >= 2) {
             segmentation = 'Core';
+            character = 'Customer paling aktif, sering transaksi, kontribusi revenue tinggi.';
         }
-        // 3. GROWTH: Recent (R>=2) dengan total score tinggi (6-7) tapi belum jadi CORE
-        else if (rScore >= 2 && (totalScore >= 6)) {
+        // 3. GROWTH: R >= 2 DAN (F >= 2 atau M = 3) - tapi bukan CORE
+        else if (rScore >= 2 && (fScore >= 2 || mScore === 3)) {
             segmentation = 'Growth';
+            character = 'Customer potensial, mulai berkembang, nilai/frekuensi mulai kuat.';
         }
-        // 4. PASSIVE: Recent (R>=2) dengan total score sedang (4-5)
-        else if (rScore >= 2 && (totalScore >= 4)) {
-            segmentation = 'Passive';
-        }
+        // 4. PASSIVE: R >= 2, F = 1, M <= 2
         else {
-            segmentation = 'Churn';
+            segmentation = 'Passive';
+            character = 'Customer biasa, transaksi belum kuat, tahap coba-coba, stagnan.';
         }
 
         return {
@@ -81,7 +81,8 @@ export function calculateRFM(transactions, settings) {
             f: fScore,
             m: mScore,
             score: rfmScoring,
-            segmentation: segmentation
+            segmentation: segmentation,
+            character: character
         };
     });
 

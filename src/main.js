@@ -230,7 +230,7 @@ function renderBroadcast() {
         const tr = document.createElement('tr');
         tr.innerHTML = `
             <td title="${row.name}">${row.name}</td>
-            <td>${row.customer_id}</td>
+            <td style="font-size:11px;color:var(--text-dim);white-space:normal">${row.character}</td>
             <td>${row.phone || '-'}</td>
             <td><span class="badge badge-${row.segmentation.toLowerCase()}">${row.segmentation}</span></td>
             <td style="color:var(--text-dim);font-size:11px;white-space:normal">${strategy}</td>
