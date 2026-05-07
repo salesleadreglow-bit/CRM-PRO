@@ -80,6 +80,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     // 1. Jalankan Navigasi & Event Listeners DULU
     setupNavigation();
     setupEventListeners();
+    setupExtraListeners();
     loadSettingsIntoUI();
     
     // 2. Baru kemudian cek koneksi & auth
@@ -387,6 +388,7 @@ function setupEventListeners() {
     if (searchRfm) {
         searchRfm.addEventListener('input', handleSearch);
     }
+} // Tutup setupEventListeners di sini
 
 function setupNavigation() {
     const navItems = document.querySelectorAll('.nav-item');
@@ -431,6 +433,8 @@ function setupNavigation() {
     if (btnMenuMobile) btnMenuMobile.addEventListener('click', openSidebar);
     if (sidebarOverlay) sidebarOverlay.addEventListener('click', closeSidebar);
 }
+
+function setupExtraListeners() {
 
     // Stat Cards Filter
     const statCards = document.querySelectorAll('.stat-card');
