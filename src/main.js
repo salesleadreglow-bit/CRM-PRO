@@ -164,10 +164,15 @@ function renderDashboard(filteredData = null) {
 
     // Update Counts (always show global counts)
     const globalRfm = state.rfmData;
-    document.getElementById('count-core').textContent = globalRfm.filter(c => c.segmentation === 'Core').length;
-    document.getElementById('count-growth').textContent = globalRfm.filter(c => c.segmentation === 'Growth').length;
-    document.getElementById('count-passive').textContent = globalRfm.filter(c => c.segmentation === 'Passive').length;
-    document.getElementById('count-churn').textContent = globalRfm.filter(c => c.segmentation === 'Churn').length;
+    const cCore = document.getElementById('count-core');
+    const cGrowth = document.getElementById('count-growth');
+    const cPassive = document.getElementById('count-passive');
+    const cChurn = document.getElementById('count-churn');
+    
+    if (cCore) cCore.textContent = globalRfm.filter(c => c.segmentation === 'Core').length;
+    if (cGrowth) cGrowth.textContent = globalRfm.filter(c => c.segmentation === 'Growth').length;
+    if (cPassive) cPassive.textContent = globalRfm.filter(c => c.segmentation === 'Passive').length;
+    if (cChurn) cChurn.textContent = globalRfm.filter(c => c.segmentation === 'Churn').length;
 
     // Slice for pagination
     const start = (state.currentPageRFM - 1) * state.pageSize;
@@ -197,17 +202,24 @@ function renderDashboard(filteredData = null) {
         tbody.appendChild(tr);
     });
     
-    // Update Pagination UI
-    document.getElementById('rfm-page-num').textContent = `Hal. ${state.currentPageRFM} / ${totalPages}`;
-    document.getElementById('rfm-table-info').textContent = `Menampilkan ${start + 1}-${Math.min(start + state.pageSize, totalItems)} dari ${totalItems} pelanggan.`;
+    // Update Pagination UI with safety checks
+    const pageNumEl = document.getElementById('rfm-page-num');
+    const tableInfoEl = document.getElementById('rfm-table-info');
+    const btnPrev = document.getElementById('btn-rfm-prev');
+    const btnNext = document.getElementById('btn-rfm-next');
     
-    document.getElementById('btn-rfm-prev').disabled = (state.currentPageRFM === 1);
-    document.getElementById('btn-rfm-next').disabled = (state.currentPageRFM === totalPages);
+    if (pageNumEl) pageNumEl.textContent = `Hal. ${state.currentPageRFM} / ${totalPages}`;
+    if (tableInfoEl) tableInfoEl.textContent = `Menampilkan ${start + 1}-${Math.min(start + state.pageSize, totalItems)} dari ${totalItems} pelanggan.`;
+    
+    if (btnPrev) btnPrev.disabled = (state.currentPageRFM === 1);
+    if (btnNext) btnNext.disabled = (state.currentPageRFM === totalPages);
 }
 
 function renderBroadcast() {
     const rfm = state.rfmData;
-    const filter = document.getElementById('filter-segment-broadcast').value;
+    const filterEl = document.getElementById('filter-segment-broadcast');
+    if (!filterEl) return;
+    const filter = filterEl.value;
     const filtered = filter === 'all' ? rfm : rfm.filter(c => c.segmentation === filter);
     
     const totalItems = filtered.length;
@@ -221,6 +233,7 @@ function renderBroadcast() {
     const paginated = filtered.slice(start, start + state.pageSize);
 
     const tbody = document.querySelector('#table-broadcast tbody');
+    if (!tbody) return;
     tbody.innerHTML = '';
 
     paginated.forEach(row => {
@@ -229,7 +242,7 @@ function renderBroadcast() {
         const tr = document.createElement('tr');
         tr.innerHTML = `
             <td title="${row.name}">${row.name}</td>
-            <td style="font-size:11px;color:var(--text-dim);white-space:normal">${row.character}</td>
+            <td style="font-size:11px;color:var(--text-dim);white-space:normal">${row.character || '-'}</td>
             <td>${row.phone || '-'}</td>
             <td><span class="badge badge-${row.segmentation.toLowerCase()}">${row.segmentation}</span></td>
             <td style="color:var(--text-dim);font-size:11px;white-space:normal">${strategy}</td>
@@ -237,12 +250,17 @@ function renderBroadcast() {
         tbody.appendChild(tr);
     });
 
-    // Update Pagination UI
-    document.getElementById('broadcast-page-num').textContent = `Hal. ${state.currentPageBroadcast} / ${totalPages}`;
-    document.getElementById('broadcast-table-info').textContent = `Menampilkan ${start + 1}-${Math.min(start + state.pageSize, totalItems)} dari ${totalItems} pelanggan.`;
+    // Update Pagination UI with safety checks
+    const pageNumEl = document.getElementById('broadcast-page-num');
+    const tableInfoEl = document.getElementById('broadcast-table-info');
+    const btnPrev = document.getElementById('btn-broadcast-prev');
+    const btnNext = document.getElementById('btn-broadcast-next');
+
+    if (pageNumEl) pageNumEl.textContent = `Hal. ${state.currentPageBroadcast} / ${totalPages}`;
+    if (tableInfoEl) tableInfoEl.textContent = `Menampilkan ${start + 1}-${Math.min(start + state.pageSize, totalItems)} dari ${totalItems} pelanggan.`;
     
-    document.getElementById('btn-broadcast-prev').disabled = (state.currentPageBroadcast === 1);
-    document.getElementById('btn-broadcast-next').disabled = (state.currentPageBroadcast === totalPages);
+    if (btnPrev) btnPrev.disabled = (state.currentPageBroadcast === 1);
+    if (btnNext) btnNext.disabled = (state.currentPageBroadcast === totalPages);
 }
 
 // --- Navigation & UI ---
