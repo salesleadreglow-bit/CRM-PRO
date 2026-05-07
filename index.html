@@ -7,529 +7,405 @@
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <!-- Phosphor Icons -->
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
     <link rel="stylesheet" href="/src/style.css">
 </head>
-<body class="bg-bg-deep text-text-main font-sans overflow-hidden h-screen w-screen selection:bg-primary/30">
+<body class="dark-theme">
     
-    <!-- Backdrop Overlay (Hanya muncul di mobile saat sidebar aktif) -->
-    <div id="sidebar-overlay" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[45] hidden lg:hidden transition-opacity duration-300"></div>
+    <!-- Loader Overlay -->
+    <div id="loader" class="loader-overlay active">
+        <div class="glass-loader">
+            <div class="spinner"></div>
+            <p>Sinkronisasi data dengan Supabase...</p>
+        </div>
+    </div>
 
     <!-- Login Overlay -->
-    <div id="login-overlay" class="fixed inset-0 bg-bg-deep/40 backdrop-blur-md z-[100] flex items-center justify-center p-4 opacity-0 pointer-events-none transition-all duration-500 [&.active]:opacity-100 [&.active]:pointer-events-auto">
-        <div class="w-full max-w-md bg-white/5 backdrop-blur-3xl border border-white/10 p-8 rounded-[2.5rem] shadow-2xl relative overflow-hidden group">
-            <!-- Decorative Glow -->
-            <div class="absolute -top-24 -right-24 w-48 h-48 bg-primary/20 blur-3xl rounded-full group-hover:bg-primary/30 transition-all duration-700"></div>
+    <div id="login-overlay" class="login-overlay active">
+        <div class="login-card glass">
+            <div class="login-header">
+                <div class="logo-icon" style="background: transparent; box-shadow: none;">
+                    <img src="logo.png" alt="Logo" style="width: 100%; height: 100%; object-fit: contain;">
+                </div>
+                <h2>CRM PRO Access</h2>
+                <p>Silakan login untuk mengakses dashboard</p>
+            </div>
             
-            <div class="relative z-10">
-                <!-- Login Mode -->
-                <div id="auth-login-mode">
-                    <div class="text-center mb-8">
-                        <div class="w-16 h-16 bg-gradient-to-br from-primary to-secondary rounded-2xl flex items-center justify-center text-3xl text-white shadow-xl shadow-primary/20 mx-auto mb-4 active:scale-90 transition-transform">
-                            <i class="ph-fill ph-lock-key"></i>
-                        </div>
-                        <h2 class="text-2xl font-bold tracking-tight">CRM PRO Access</h2>
-                        <p class="text-xs text-text-dim mt-2 uppercase tracking-widest font-medium opacity-60">Silakan login untuk mengakses dashboard</p>
+            <!-- Login Mode -->
+            <div id="auth-login-mode">
+                <form id="login-form" class="auth-form">
+                    <div class="input-group">
+                        <label>Email Address</label>
+                        <input type="email" id="login-email" placeholder="nama@email.com" required>
                     </div>
-                    <form id="login-form" class="space-y-4">
-                        <div class="space-y-2">
-                            <label class="text-[10px] font-bold text-text-dim uppercase tracking-[0.2em] ml-1">Email Address</label>
-                            <input type="email" id="login-email" class="w-full bg-white/5 border border-white/10 rounded-2xl px-5 py-4 outline-none focus:border-primary/50 focus:bg-white/10 transition-all placeholder:text-white/10" placeholder="nama@email.com" required>
-                        </div>
-                        <div class="space-y-2">
-                            <div class="flex justify-between items-center px-1">
-                                <label class="text-[10px] font-bold text-text-dim uppercase tracking-[0.2em]">Password</label>
-                                <a href="#" id="go-to-reset" class="text-[10px] text-primary hover:underline font-bold">Lupa Password?</a>
-                            </div>
-                            <input type="password" id="login-password" class="w-full bg-white/5 border border-white/10 rounded-2xl px-5 py-4 outline-none focus:border-primary/50 focus:bg-white/10 transition-all placeholder:text-white/10" placeholder="••••••••" required>
-                        </div>
-                        <button type="submit" class="w-full bg-primary hover:bg-primary-hover text-white font-bold py-4 rounded-2xl flex items-center justify-center gap-3 shadow-xl shadow-primary/20 transition-all active:scale-[0.98]">
-                            <i class="ph ph-sign-in text-lg"></i>
-                            Login ke Dashboard
-                        </button>
-                    </form>
-                    <p class="text-center text-sm text-text-dim mt-8">
-                        Belum punya akun? 
-                        <a href="#" id="go-to-signup" class="text-primary font-bold hover:underline">Daftar Sekarang</a>
-                    </p>
-                </div>
-
-                <!-- Sign Up Mode -->
-                <div id="auth-signup-mode" class="hidden">
-                    <div class="text-center mb-8">
-                        <div class="w-16 h-16 bg-gradient-to-br from-secondary to-primary rounded-2xl flex items-center justify-center text-3xl text-white shadow-xl shadow-secondary/20 mx-auto mb-4">
-                            <i class="ph-fill ph-user-plus"></i>
-                        </div>
-                        <h2 class="text-2xl font-bold tracking-tight">Buat Akun Baru</h2>
-                        <p class="text-xs text-text-dim mt-2 uppercase tracking-widest font-medium opacity-60">Daftar untuk mulai mengelola CRM Anda</p>
+                    <div class="input-group">
+                        <label>Password</label>
+                        <input type="password" id="login-password" placeholder="••••••••" required>
                     </div>
-                    <form id="signup-form" class="space-y-4">
-                        <div class="space-y-2">
-                            <label class="text-[10px] font-bold text-text-dim uppercase tracking-[0.2em] ml-1">Email Address</label>
-                            <input type="email" id="signup-email" class="w-full bg-white/5 border border-white/10 rounded-2xl px-5 py-4 outline-none focus:border-primary/50 focus:bg-white/10 transition-all placeholder:text-white/10" placeholder="nama@email.com" required>
-                        </div>
-                        <div class="space-y-2">
-                            <label class="text-[10px] font-bold text-text-dim uppercase tracking-[0.2em] ml-1">Create Password</label>
-                            <input type="password" id="signup-password" class="w-full bg-white/5 border border-white/10 rounded-2xl px-5 py-4 outline-none focus:border-primary/50 focus:bg-white/10 transition-all placeholder:text-white/10" placeholder="Min. 6 karakter" required minlength="6">
-                        </div>
-                        <button type="submit" class="w-full bg-primary hover:bg-primary-hover text-white font-bold py-4 rounded-2xl flex items-center justify-center gap-3 shadow-xl shadow-primary/20 transition-all active:scale-[0.98]">
-                            <i class="ph ph-user-plus text-lg"></i>
-                            Daftar Akun
-                        </button>
-                    </form>
-                    <p class="text-center text-sm text-text-dim mt-8">
-                        Sudah punya akun? 
-                        <a href="#" id="go-to-login" class="text-primary font-bold hover:underline">Kembali Login</a>
-                    </p>
-                </div>
-                
-                <div class="mt-8 pt-6 border-t border-white/5 text-center">
-                    <p id="auth-error" class="text-churn text-xs mb-4 min-h-[1rem] font-medium"></p>
-                    <button id="btn-reset-config" class="text-[9px] text-white/20 hover:text-white/60 transition-colors uppercase tracking-[0.3em] font-bold">
-                        Reset Konfigurasi Supabase
+                    <div id="auth-error" class="status-msg danger"></div>
+                    <button type="submit" class="refresh-btn w-100" style="background: var(--primary); border: none; padding: 15px;">
+                        <i class="ph ph-sign-in"></i> Login ke Dashboard
                     </button>
-                </div>
+                </form>
+                <p class="auth-toggle">Belum punya akun? <a href="#" id="go-to-signup">Daftar Sekarang</a></p>
+                <p class="auth-toggle" style="margin-top: 10px;"><a href="#" id="go-to-reset" style="font-size: 11px; opacity: 0.7;">Lupa Password?</a></p>
+            </div>
+
+            <!-- Signup Mode -->
+            <div id="auth-signup-mode" style="display: none;">
+                <form id="signup-form" class="auth-form">
+                    <div class="input-group">
+                        <label>Email Address</label>
+                        <input type="email" id="signup-email" placeholder="nama@email.com" required>
+                    </div>
+                    <div class="input-group">
+                        <label>Create Password</label>
+                        <input type="password" id="signup-password" placeholder="Min. 6 karakter" required minlength="6">
+                    </div>
+                    <button type="submit" class="refresh-btn w-100" style="background: var(--growth); border: none; padding: 15px;">
+                        <i class="ph ph-user-plus"></i> Daftar Akun
+                    </button>
+                </form>
+                <p class="auth-toggle">Sudah punya akun? <a href="#" id="go-to-login">Kembali Login</a></p>
+            </div>
+
+            <div style="margin-top: 20px; border-top: 1px solid var(--glass-border); padding-top: 15px;">
+                <button id="btn-reset-config" style="background: transparent; border: 1px solid var(--glass-border); color: var(--text-muted); font-size: 10px; cursor: pointer; padding: 5px 10px; border-radius: 5px;">Reset Konfigurasi Supabase</button>
             </div>
         </div>
     </div>
 
-    <!-- Update Password Overlay -->
-    <div id="update-password-overlay" class="fixed inset-0 bg-bg-deep/80 backdrop-blur-xl z-[101] hidden flex items-center justify-center p-4">
-        <div class="w-full max-w-md bg-bg-surface/60 backdrop-blur-2xl border border-white/10 p-8 rounded-[2rem] shadow-2xl">
-            <div class="text-center mb-8">
-                <div class="w-16 h-16 bg-core rounded-2xl flex items-center justify-center text-3xl text-white shadow-lg shadow-core/20 mx-auto mb-4">
-                    <i class="ph-fill ph-key"></i>
-                </div>
-                <h2 class="text-2xl font-bold">Ganti Password Baru</h2>
-                <p class="text-sm text-text-dim mt-2">Silakan masukkan password baru Anda.</p>
-            </div>
-            <form id="update-password-form" class="space-y-4">
-                <div class="space-y-2">
-                    <label class="text-xs font-bold text-text-muted uppercase tracking-wider">Password Baru</label>
-                    <input type="password" id="new-password" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 outline-none focus:border-primary transition-colors" placeholder="Min. 6 karakter" required minlength="6">
-                </div>
-                <button type="submit" class="w-full bg-primary hover:bg-primary/90 text-white font-bold py-4 rounded-xl flex items-center justify-center gap-2 shadow-lg shadow-primary/20 transition-all active:scale-95">
-                    <i class="ph ph-check"></i>
-                    Simpan Password Baru
-                </button>
-            </form>
-            <p id="update-password-error" class="text-center text-churn text-xs mt-4"></p>
-        </div>
-    </div>
-
-    <!-- Loader Overlay -->
-    <div id="loader" class="fixed inset-0 bg-bg-deep z-[150] flex items-center justify-center transition-opacity duration-500 active:opacity-100 opacity-0 pointer-events-none">
-        <div class="bg-bg-surface/60 backdrop-blur-2xl border border-white/10 p-10 rounded-3xl text-center shadow-2xl">
-            <div class="w-12 h-12 border-4 border-primary/20 border-t-primary rounded-full animate-spin mx-auto mb-4"></div>
-            <p class="font-medium">Menginisialisasi CRM PRO...</p>
-        </div>
-    </div>
-
-    <div class="flex h-screen overflow-hidden">
+    <!-- App Container -->
+    <div class="app-container">
         <!-- Sidebar -->
-        <aside id="main-sidebar" class="fixed inset-y-0 left-0 z-50 w-72 bg-bg-surface border-r border-white/10 flex flex-col transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out">
-            <div class="p-8">
-                <div class="flex items-center gap-4">
-                    <div class="w-10 h-10 bg-gradient-to-br from-primary to-secondary rounded-xl flex items-center justify-center text-2xl text-white shadow-lg shadow-primary/20">
-                        <i class="ph-fill ph-rocket-launch"></i>
+        <aside class="sidebar" id="main-sidebar">
+            <div class="sidebar-header">
+                <div class="logo-wrapper">
+                    <div class="logo-icon" style="background: transparent; box-shadow: none;">
+                        <img src="logo.png" alt="Logo" style="height: 100%; width: auto; object-fit: contain;">
                     </div>
-                    <div class="flex flex-col">
-                        <span class="font-extrabold text-lg tracking-tight">CRM PRO</span>
-                        <span class="text-[10px] text-text-dim font-bold uppercase tracking-widest">Enterprise Edition</span>
+                    <div class="logo-text">
+                        <span class="logo-main">CRM PRO</span>
+                        <span class="logo-sub">Enterprise Edition</span>
                     </div>
                 </div>
             </div>
-            
-            <nav class="flex-1 px-4 py-4 space-y-8 overflow-y-auto custom-scrollbar">
-                <div class="space-y-4">
-                    <span class="px-4 text-[10px] font-bold text-text-muted uppercase tracking-[0.2em]">Main Menu</span>
-                    <ul class="space-y-2">
-                        <li class="nav-item group flex items-center gap-3 px-4 py-3 rounded-xl cursor-pointer transition-all hover:bg-white/5 text-text-dim hover:text-white active" data-target="dashboard-view">
-                            <i class="ph ph-squares-four text-xl group-hover:scale-110 transition-transform"></i>
-                            <span class="font-medium">Dashboard RFM</span>
+
+            <nav class="sidebar-nav custom-scrollbar">
+                <div class="nav-group">
+                    <span class="nav-label">Main Menu</span>
+                    <ul>
+                        <li class="nav-item active" data-target="dashboard-view">
+                            <i class="ph ph-squares-four"></i>
+                            <span>Dashboard RFM</span>
                         </li>
-                        <li class="nav-item group flex items-center gap-3 px-4 py-3 rounded-xl cursor-pointer transition-all hover:bg-white/5 text-text-dim hover:text-white" data-target="upload-view">
-                            <i class="ph ph-cloud-arrow-up text-xl group-hover:scale-110 transition-transform"></i>
-                            <span class="font-medium">Upload Data</span>
+                        <li class="nav-item" data-target="upload-view">
+                            <i class="ph ph-cloud-arrow-up"></i>
+                            <span>Upload Data</span>
                         </li>
-                        <li class="nav-item group flex items-center gap-3 px-4 py-3 rounded-xl cursor-pointer transition-all hover:bg-white/5 text-text-dim hover:text-white" data-target="broadcast-view">
-                            <i class="ph ph-whatsapp-logo text-xl group-hover:scale-110 transition-transform"></i>
-                            <span class="font-medium">Master Broadcast</span>
+                        <li class="nav-item" data-target="broadcast-view">
+                            <i class="ph ph-whatsapp-logo"></i>
+                            <span>Master Broadcast</span>
                         </li>
                     </ul>
                 </div>
-                
-                <div class="space-y-4">
-                    <span class="px-4 text-[10px] font-bold text-text-muted uppercase tracking-[0.2em]">System</span>
-                    <ul class="space-y-2">
-                        <li class="nav-item group flex items-center gap-3 px-4 py-3 rounded-xl cursor-pointer transition-all hover:bg-white/5 text-text-dim hover:text-white" data-target="settings-view">
-                            <i class="ph ph-gear-six text-xl group-hover:scale-110 transition-transform"></i>
-                            <span class="font-medium">Pengaturan</span>
+                <div class="nav-group">
+                    <span class="nav-label">System</span>
+                    <ul>
+                        <li class="nav-item" data-target="settings-view">
+                            <i class="ph ph-gear"></i>
+                            <span>Pengaturan</span>
                         </li>
                     </ul>
                 </div>
             </nav>
 
-            <div class="p-6 border-t border-white/10 space-y-4 bg-bg-surface">
-                <div class="flex items-center gap-3 px-4 py-2 bg-white/5 rounded-lg text-xs" id="db-status">
-                    <div class="w-2 h-2 rounded-full bg-churn shadow-[0_0_8px_rgba(239,68,68,0.5)]"></div>
-                    <span class="text-text-dim">Supabase Offline</span>
+            <div class="sidebar-footer">
+                <div class="connection-status">
+                    <div class="status-dot online"></div>
+                    <span>Supabase Terhubung</span>
                 </div>
-                <button id="btn-refresh" class="w-full bg-white/5 hover:bg-white/10 border border-white/10 text-white py-3 rounded-xl flex items-center justify-center gap-2 text-sm font-bold transition-all active:scale-95">
+                <button class="refresh-btn" id="btn-sync">
                     <i class="ph ph-arrows-clockwise"></i>
                     <span>Sinkronkan Data</span>
                 </button>
-                <button id="btn-logout" class="w-full bg-white/5 hover:bg-churn/10 border border-churn/20 text-churn py-3 rounded-xl flex items-center justify-center gap-2 text-sm font-bold transition-all active:scale-95">
+                <button class="refresh-btn" id="btn-logout" style="margin-top: 8px; background: rgba(239, 68, 68, 0.1); color: #ef4444; border-color: rgba(239, 68, 68, 0.2);">
                     <i class="ph ph-sign-out"></i>
                     <span>Keluar Sistem</span>
                 </button>
-                <div class="text-center space-y-1">
-                    <div class="text-[10px] text-text-muted font-bold tracking-widest uppercase">© Mohamad Viekry - SRN</div>
-                </div>
             </div>
         </aside>
 
+        <!-- Sidebar Overlay (Mobile) -->
+        <div id="sidebar-overlay" class="modal-overlay"></div>
+
         <!-- Main Content -->
-        <main class="flex-1 flex flex-col h-screen overflow-hidden bg-[radial-gradient(circle_at_top_right,_rgba(99,102,241,0.05),_transparent_400px)]">
-            <header class="h-20 lg:h-24 px-6 lg:px-10 flex items-center justify-between border-b border-white/5 backdrop-blur-md sticky top-0 z-40">
-                <div class="flex items-center gap-4 lg:gap-0 overflow-hidden">
-                    <button id="btn-menu-mobile" class="lg:hidden w-10 h-10 bg-white/5 border border-white/10 rounded-xl flex items-center justify-center text-xl active:scale-90 transition-transform">
-                        <i class="ph ph-list"></i>
-                    </button>
-                    <div class="flex flex-col truncate">
-                        <h1 id="view-title" class="text-lg lg:text-2xl font-bold truncate">Dashboard RFM (VERSI TERBARU)</h1>
-                        <p class="hidden sm:block text-xs lg:text-sm text-text-dim truncate" id="view-subtitle">Analisis segmentasi pelanggan secara real-time.</p>
+        <main class="main-content">
+            <!-- Top Bar -->
+            <header class="top-bar">
+                <div class="header-left">
+                    <div style="display: flex; align-items: center; gap: 15px;">
+                        <div>
+                            <h1 id="view-title">Dashboard RFM</h1>
+                            <span class="view-subtitle" id="view-subtitle">Analisis segmentasi pelanggan secara real-time.</span>
+                        </div>
                     </div>
                 </div>
-                <div class="hidden sm:flex items-center gap-6">
-                    <div class="flex items-center gap-4 bg-white/5 px-4 py-2 rounded-full border border-white/10">
-                        <div class="flex flex-col text-right">
-                            <span class="text-xs font-bold">Administrator</span>
-                            <span class="text-[10px] text-text-muted font-bold uppercase tracking-wider">Super User</span>
+                <div class="header-right">
+                    <div class="user-profile">
+                        <div class="user-info">
+                            <span class="user-name">Administrator</span>
+                            <span class="user-role">Super User</span>
                         </div>
-                        <div class="w-9 h-9 bg-primary rounded-full flex items-center justify-center font-bold text-sm">A</div>
+                        <div class="avatar">A</div>
                     </div>
                 </div>
             </header>
 
-            <!-- Scrollable Content Area -->
-            <div class="flex-1 overflow-y-auto p-4 lg:p-10 custom-scrollbar">
-                <div class="max-w-[1600px] mx-auto space-y-8">
-                    
-                    <!-- Dashboard View -->
-                    <section id="dashboard-view" class="view-section active space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
-                        <!-- Stats Grid: 1 col on Mobile, 2 on Tablet, 4 on Desktop -->
-                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
-                            <!-- Card Core -->
-                            <div class="bg-bg-surface/60 backdrop-blur-xl border border-white/10 p-6 rounded-3xl flex items-center gap-6 group hover:border-core/50 transition-colors cursor-pointer" data-segment="Core">
-                                <div class="w-14 h-14 bg-core/10 text-core rounded-2xl flex items-center justify-center text-2xl group-hover:scale-110 transition-transform">
-                                    <i class="ph ph-star-four"></i>
-                                </div>
-                                <div class="flex flex-col">
-                                    <span class="text-xs font-bold text-text-dim uppercase tracking-wider">Segmen Core</span>
-                                    <h2 class="text-3xl font-extrabold mt-1" id="count-core">0</h2>
-                                    <span class="text-[10px] font-bold text-core mt-1 flex items-center gap-1 uppercase"><i class="ph ph-trend-up"></i> Best Value</span>
-                                </div>
+            <!-- Scrollable Content -->
+            <div class="content-scroll custom-scrollbar">
+                
+                <!-- Dashboard View -->
+                <section id="dashboard-view" class="view-section active">
+                    <div class="stats-grid">
+                        <div class="stat-card glass" data-segment="Core">
+                            <div class="stat-icon-box core">
+                                <i class="ph ph-star-four"></i>
                             </div>
-                            <!-- Card Growth -->
-                            <div class="bg-bg-surface/60 backdrop-blur-xl border border-white/10 p-6 rounded-3xl flex items-center gap-6 group hover:border-growth/50 transition-colors cursor-pointer" data-segment="Growth">
-                                <div class="w-14 h-14 bg-growth/10 text-growth rounded-2xl flex items-center justify-center text-2xl group-hover:scale-110 transition-transform">
-                                    <i class="ph ph-chart-line-up"></i>
-                                </div>
-                                <div class="flex flex-col">
-                                    <span class="text-xs font-bold text-text-dim uppercase tracking-wider">Segmen Growth</span>
-                                    <h2 class="text-3xl font-extrabold mt-1" id="count-growth">0</h2>
-                                    <span class="text-[10px] font-bold text-growth mt-1 flex items-center gap-1 uppercase"><i class="ph ph-arrows-left-right"></i> Potential</span>
-                                </div>
+                            <div class="stat-details">
+                                <span class="stat-label">Segmen Core</span>
+                                <h3 class="stat-value" id="count-core">0</h3>
+                                <span class="stat-trend positive"><i class="ph ph-trend-up"></i> Best Value</span>
                             </div>
-                            <!-- Card Passive -->
-                            <div class="bg-bg-surface/60 backdrop-blur-xl border border-white/10 p-6 rounded-3xl flex items-center gap-6 group hover:border-passive/50 transition-colors cursor-pointer" data-segment="Passive">
-                                <div class="w-14 h-14 bg-passive/10 text-passive rounded-2xl flex items-center justify-center text-2xl group-hover:scale-110 transition-transform">
-                                    <i class="ph ph-clock-countdown"></i>
-                                </div>
-                                <div class="flex flex-col">
-                                    <span class="text-xs font-bold text-text-dim uppercase tracking-wider">Segmen Passive</span>
-                                    <h2 class="text-3xl font-extrabold mt-1" id="count-passive">0</h2>
-                                    <span class="text-[10px] font-bold text-passive mt-1 flex items-center gap-1 uppercase"><i class="ph ph-trend-down"></i> Re-engage</span>
-                                </div>
+                        </div>
+                        <div class="stat-card glass" data-segment="Growth">
+                            <div class="stat-icon-box growth">
+                                <i class="ph ph-chart-line-up"></i>
                             </div>
-                            <!-- Card Churn -->
-                            <div class="bg-bg-surface/60 backdrop-blur-xl border border-white/10 p-6 rounded-3xl flex items-center gap-6 group hover:border-churn/50 transition-colors cursor-pointer" data-segment="Churn">
-                                <div class="w-14 h-14 bg-churn/10 text-churn rounded-2xl flex items-center justify-center text-2xl group-hover:scale-110 transition-transform">
-                                    <i class="ph ph-warning"></i>
-                                </div>
-                                <div class="flex flex-col">
-                                    <span class="text-xs font-bold text-text-dim uppercase tracking-wider">Segmen Churn</span>
-                                    <h2 class="text-3xl font-extrabold mt-1" id="count-churn">0</h2>
-                                    <span class="text-[10px] font-bold text-churn mt-1 flex items-center gap-1 uppercase"><i class="ph ph-shield-warning"></i> High Risk</span>
+                            <div class="stat-details">
+                                <span class="stat-label">Segmen Growth</span>
+                                <h3 class="stat-value" id="count-growth">0</h3>
+                                <span class="stat-trend neutral"><i class="ph ph-arrows-left-right"></i> Potential</span>
+                            </div>
+                        </div>
+                        <div class="stat-card glass" data-segment="Passive">
+                            <div class="stat-icon-box passive">
+                                <i class="ph ph-clock-countdown"></i>
+                            </div>
+                            <div class="stat-details">
+                                <span class="stat-label">Segmen Passive</span>
+                                <h3 class="stat-value" id="count-passive">0</h3>
+                                <span class="stat-trend warning"><i class="ph ph-trend-down"></i> Re-engage</span>
+                            </div>
+                        </div>
+                        <div class="stat-card glass" data-segment="Churn">
+                            <div class="stat-icon-box churn">
+                                <i class="ph ph-warning"></i>
+                            </div>
+                            <div class="stat-details">
+                                <span class="stat-label">Segmen Churn</span>
+                                <h3 class="stat-value" id="count-churn">0</h3>
+                                <span class="stat-trend danger"><i class="ph ph-shield-warning"></i> High Risk</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="data-card glass">
+                        <div class="card-header">
+                            <div class="header-title">
+                                <h2>Pelanggan Tersegmentasi</h2>
+                                <p>Menampilkan analisis RFM dari database Supabase.</p>
+                            </div>
+                            <div class="search-box">
+                                <i class="ph ph-magnifying-glass"></i>
+                                <input type="text" id="search-rfm" placeholder="Cari pelanggan...">
+                            </div>
+                        </div>
+                        <div class="table-container">
+                            <table id="table-rfm">
+                                <thead>
+                                    <tr>
+                                        <th>Nama</th>
+                                        <th>Last Order</th>
+                                        <th>Revenue</th>
+                                        <th>Freq</th>
+                                        <th>Recency</th>
+                                        <th>R</th>
+                                        <th>F</th>
+                                        <th>M</th>
+                                        <th>Score</th>
+                                        <th>Segmentasi</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                        <div class="card-footer">
+                            <span id="rfm-info">Menampilkan 0 data</span>
+                            <div class="pagination-controls">
+                                <button class="pagination-btn" id="btn-rfm-prev" disabled><i class="ph ph-caret-left"></i></button>
+                                <span id="rfm-page">Hal 1</span>
+                                <button class="pagination-btn" id="btn-rfm-next" disabled><i class="ph ph-caret-right"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Upload View -->
+                <section id="upload-view" class="view-section">
+                    <div class="upload-container glass">
+                        <div class="upload-header">
+                            <i class="ph ph-cloud-arrow-up"></i>
+                            <h2>Upload Data Transaksi</h2>
+                            <p>Upload file CSV hasil export dari Google Sheets untuk sinkronisasi.</p>
+                        </div>
+                        <div class="drop-zone" id="drop-zone">
+                            <i class="ph ph-file-csv"></i>
+                            <p>Tarik file ke sini atau <span>klik untuk memilih</span></p>
+                            <input type="file" id="file-input" accept=".csv" class="hidden">
+                        </div>
+                        <div id="upload-progress" class="upload-progress hidden">
+                            <div class="progress-info">
+                                <span id="progress-text">Mengunggah...</span>
+                                <span id="progress-percent">0%</span>
+                            </div>
+                            <div class="progress-bar-wrapper">
+                                <div id="progress-fill" class="progress-bar-fill"></div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Broadcast View -->
+                <section id="broadcast-view" class="view-section">
+                    <div class="data-card glass">
+                        <div class="card-header">
+                            <div class="header-title">
+                                <h2>Master Broadcast</h2>
+                                <p>Gunakan tombol WhatsApp di setiap baris untuk mengirim pesan.</p>
+                            </div>
+                            <div class="header-actions" style="display: flex; gap: 10px; align-items: center; width: 60%; justify-content: flex-end;">
+                                <select id="filter-segment-broadcast" class="glass-select" style="width: 140px;">
+                                    <option value="all">Semua Segmen</option>
+                                    <option value="Core">Core</option>
+                                    <option value="Growth">Growth</option>
+                                    <option value="Passive">Passive</option>
+                                    <option value="Churn">Churn</option>
+                                </select>
+                                <button id="btn-export-excel" class="refresh-btn" style="background: var(--growth); border: none; padding: 0 12px; height: 36px; width: 100px; font-size: 12px; flex-shrink: 0;">
+                                    <i class="ph ph-file-xls"></i> Export
+                                </button>
+                                <div class="search-box" style="flex: 1; max-width: 200px;">
+                                    <i class="ph ph-magnifying-glass"></i>
+                                    <input type="text" id="search-broadcast" placeholder="Cari pelanggan..." style="width: 100%;">
                                 </div>
                             </div>
                         </div>
-
-                        <!-- Main Data Table Container -->
-                        <div class="bg-bg-surface/40 backdrop-blur-xl border border-white/10 rounded-[2.5rem] overflow-hidden shadow-2xl">
-                            <div class="p-6 lg:p-10 flex flex-col md:flex-row md:items-center justify-between gap-6 border-b border-white/10">
-                                <div class="space-y-2">
-                                    <h2 class="text-xl lg:text-2xl font-bold">Pelanggan Tersegmentasi</h2>
-                                    <p class="text-xs lg:text-sm text-text-dim">Menampilkan analisis RFM dari database Supabase.</p>
-                                </div>
-                                <div class="w-full md:w-80 relative">
-                                    <i class="ph ph-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-text-muted"></i>
-                                    <input type="text" id="search-rfm" class="w-full bg-white/5 border border-white/10 rounded-2xl pl-12 pr-4 py-3 text-sm outline-none focus:border-primary transition-colors" placeholder="Cari pelanggan...">
-                                </div>
-                            </div>
-                            
-                            <!-- Scrollable Table Section -->
-                            <div class="overflow-x-auto custom-scrollbar">
-                                <table id="table-rfm" class="w-full text-left border-collapse">
-                                    <thead>
-                                        <tr class="bg-white/[0.02] text-text-muted uppercase text-[10px] font-bold tracking-widest border-b border-white/5">
-                                            <th class="px-8 py-5">Pelanggan</th>
-                                            <th class="px-6 py-5">Last Order</th>
-                                            <th class="px-6 py-5 text-right">Revenue</th>
-                                            <th class="px-6 py-5 text-center">Freq</th>
-                                            <th class="px-6 py-5 text-center">Recency</th>
-                                            <th class="px-4 py-5 text-center">R</th>
-                                            <th class="px-4 py-5 text-center">F</th>
-                                            <th class="px-4 py-5 text-center">M</th>
-                                            <th class="px-6 py-5 text-center">Score</th>
-                                            <th class="px-8 py-5 text-center">Segmentasi</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody class="text-sm">
-                                        <!-- Dynamic Rows -->
-                                    </tbody>
-                                </table>
-                            </div>
-
-                            <div class="p-6 lg:p-10 border-t border-white/5 flex flex-col sm:flex-row items-center justify-between gap-6">
-                                <span id="rfm-table-info" class="text-xs text-text-dim font-bold uppercase tracking-wider">Menampilkan 0 data</span>
-                                <div class="flex items-center gap-4">
-                                    <button id="btn-rfm-prev" class="w-10 h-10 bg-white/5 border border-white/10 rounded-xl flex items-center justify-center hover:bg-white/10 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"><i class="ph ph-caret-left"></i></button>
-                                    <span id="rfm-page-num" class="text-sm font-bold w-20 text-center">Hal. 1</span>
-                                    <button id="btn-rfm-next" class="w-10 h-10 bg-white/5 border border-white/10 rounded-xl flex items-center justify-center hover:bg-white/10 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"><i class="ph ph-caret-right"></i></button>
-                                </div>
+                        <div class="table-container">
+                            <table id="table-broadcast">
+                                <thead>
+                                    <tr>
+                                        <th>Nama</th>
+                                        <th>WhatsApp</th>
+                                        <th>Segmentasi</th>
+                                        <th>Karakter</th>
+                                        <th>Strategi</th>
+                                        <th>Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                        <div class="card-footer">
+                            <span id="broadcast-info">Menampilkan 0 data</span>
+                            <div class="pagination-controls">
+                                <button class="pagination-btn" id="btn-broadcast-prev" disabled><i class="ph ph-caret-left"></i></button>
+                                <span id="broadcast-page">Hal 1</span>
+                                <button class="pagination-btn" id="btn-broadcast-next" disabled><i class="ph ph-caret-right"></i></button>
                             </div>
                         </div>
-                    </section>
+                    </div>
+                </section>
 
-                    <!-- Upload View -->
-                    <section id="upload-view" class="view-section hidden space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
-                        <div class="max-w-2xl mx-auto bg-bg-surface/60 backdrop-blur-xl border border-white/10 p-8 lg:p-12 rounded-[2.5rem] shadow-2xl text-center space-y-8">
-                            <div class="space-y-4">
-                                <div class="w-20 h-20 bg-primary/10 text-primary rounded-[2rem] flex items-center justify-center text-4xl mx-auto">
-                                    <i class="ph ph-file-csv"></i>
-                                </div>
-                                <h2 class="text-2xl font-bold">Incremental Upload</h2>
-                                <p class="text-sm text-text-dim max-w-sm mx-auto">Unggah file transaksi (CSV) untuk memperbarui data CRM secara otomatis.</p>
-                            </div>
-                            
-                            <div class="drop-zone group relative border-2 border-dashed border-white/10 rounded-3xl p-12 lg:p-20 transition-all hover:border-primary/50 hover:bg-primary/5 cursor-pointer" id="drop-zone">
-                                <input type="file" id="file-input" accept=".csv" hidden>
-                                <div class="flex flex-col items-center gap-6">
-                                    <i class="ph ph-upload-simple text-5xl text-text-dim group-hover:text-primary transition-colors"></i>
-                                    <div class="space-y-1">
-                                        <p class="text-lg font-bold">Tarik file ke sini atau <span class="text-primary underline">klik untuk memilih</span></p>
-                                        <p class="text-xs text-text-muted">Mendukung format CSV sesuai standar CRM PRO</p>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div id="upload-progress-container" class="hidden space-y-4">
-                                <div class="flex items-center justify-between text-xs font-bold uppercase tracking-widest">
-                                    <span id="progress-status" class="text-primary">Memproses file...</span>
-                                    <span id="progress-percent">0%</span>
-                                </div>
-                                <div class="h-2 w-full bg-white/5 rounded-full overflow-hidden">
-                                    <div class="h-full bg-primary transition-all duration-300" id="progress-bar" style="width: 0%"></div>
-                                </div>
-                            </div>
-                            
-                            <div id="upload-results" class="hidden p-6 bg-white/5 rounded-2xl text-left text-sm">
-                                <!-- Results will be shown here -->
-                            </div>
-                        </div>
-                    </section>
-
-                    <!-- Broadcast View -->
-                    <section id="broadcast-view" class="view-section hidden space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
-                        <div class="bg-bg-surface/40 backdrop-blur-xl border border-white/10 rounded-[2.5rem] overflow-hidden shadow-2xl">
-                            <div class="p-6 lg:p-10 flex flex-col md:flex-row md:items-center justify-between gap-6 border-b border-white/10">
-                                <div class="space-y-2">
-                                    <h2 class="text-xl lg:text-2xl font-bold">Master Broadcast WhatsApp</h2>
-                                    <p class="text-xs lg:text-sm text-text-dim">Filter pelanggan dan ekspor data untuk kampanye WhatsApp.</p>
-                                </div>
-                                <div class="flex flex-col sm:flex-row items-center gap-4">
-                                    <select id="filter-segment-broadcast" class="w-full sm:w-48 bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm outline-none focus:border-primary transition-colors cursor-pointer">
-                                        <option value="all">Semua Segmen</option>
-                                        <option value="Core">Core</option>
-                                        <option value="Growth">Growth</option>
-                                        <option value="Passive">Passive</option>
-                                        <option value="Churn">Churn</option>
-                                    </select>
-                                    <button id="btn-export-excel" class="w-full sm:w-auto bg-primary hover:bg-primary/90 text-white font-bold px-6 py-3 rounded-xl flex items-center justify-center gap-2 shadow-lg shadow-primary/20 transition-all active:scale-95 whitespace-nowrap">
-                                        <i class="ph ph-file-xls"></i>
-                                        Ekspor Excel
-                                    </button>
-                                </div>
-                            </div>
-                            
-                            <div class="overflow-x-auto custom-scrollbar">
-                                <table id="table-broadcast" class="w-full text-left border-collapse">
-                                    <thead>
-                                        <tr class="bg-white/[0.02] text-text-muted uppercase text-[10px] font-bold tracking-widest border-b border-white/5">
-                                            <th class="px-8 py-5">Nama</th>
-                                            <th class="px-6 py-5">Karakter</th>
-                                            <th class="px-6 py-5">No. WhatsApp</th>
-                                            <th class="px-6 py-5 text-center">Segmentasi</th>
-                                            <th class="px-8 py-5">Strategi Rekomendasi</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody class="text-sm">
-                                        <!-- Dynamic Rows -->
-                                    </tbody>
-                                </table>
-                            </div>
-
-                            <div class="p-6 lg:p-10 border-t border-white/5 flex flex-col sm:flex-row items-center justify-between gap-6">
-                                <span id="broadcast-table-info" class="text-xs text-text-dim font-bold uppercase tracking-wider">Menampilkan 0 data</span>
-                                <div class="flex items-center gap-4">
-                                    <button id="btn-broadcast-prev" class="w-10 h-10 bg-white/5 border border-white/10 rounded-xl flex items-center justify-center hover:bg-white/10 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"><i class="ph ph-caret-left"></i></button>
-                                    <span id="broadcast-page-num" class="text-sm font-bold w-20 text-center">Hal. 1</span>
-                                    <button id="btn-broadcast-next" class="w-10 h-10 bg-white/5 border border-white/10 rounded-xl flex items-center justify-center hover:bg-white/10 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"><i class="ph ph-caret-right"></i></button>
-                                </div>
-                            </div>
-                        </div>
-                    </section>
-
-                    <!-- Settings View -->
-                    <section id="settings-view" class="view-section hidden space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
-                        <div class="grid grid-cols-1 xl:grid-cols-2 gap-8">
-                            <!-- Supabase Config -->
-                            <div class="bg-bg-surface/60 backdrop-blur-xl border border-white/10 p-8 rounded-[2.5rem] shadow-2xl space-y-8">
-                                <div class="flex items-center gap-4 text-xl font-bold">
-                                    <div class="w-12 h-12 bg-white/5 rounded-2xl flex items-center justify-center text-primary border border-white/10"><i class="ph ph-database"></i></div>
-                                    <h3>Konfigurasi Supabase</h3>
-                                </div>
-                                <div class="space-y-6">
-                                    <div class="space-y-2">
-                                        <label class="text-xs font-bold text-text-muted uppercase tracking-wider">Supabase URL</label>
-                                        <input type="text" id="config-supabase-url" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 outline-none focus:border-primary transition-colors" placeholder="https://xyz.supabase.co">
-                                    </div>
-                                    <div class="space-y-2">
-                                        <label class="text-xs font-bold text-text-muted uppercase tracking-wider">Supabase Anon Key</label>
-                                        <input type="password" id="config-supabase-key" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 outline-none focus:border-primary transition-colors" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...">
-                                    </div>
-                                    <div class="flex flex-col sm:flex-row items-center gap-4">
-                                        <button id="btn-test-db" class="w-full sm:w-auto bg-white/5 hover:bg-white/10 border border-white/10 text-white font-bold px-8 py-3 rounded-xl transition-all">Test Koneksi</button>
-                                        <p class="text-xs font-medium" id="db-test-msg"></p>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- RFM Thresholds -->
-                            <div class="bg-bg-surface/60 backdrop-blur-xl border border-white/10 p-8 rounded-[2.5rem] shadow-2xl space-y-8">
-                                <div class="flex items-center gap-4 text-xl font-bold">
-                                    <div class="w-12 h-12 bg-white/5 rounded-2xl flex items-center justify-center text-secondary border border-white/10"><i class="ph ph-sliders"></i></div>
-                                    <h3>Ambang Batas RFM</h3>
-                                </div>
-                                <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
-                                    <div class="space-y-4">
-                                        <h4 class="text-xs font-extrabold text-primary uppercase tracking-widest">Recency (Hari)</h4>
-                                        <div class="space-y-3">
-                                            <div class="space-y-1">
-                                                <label class="text-[10px] text-text-muted font-bold">R3 (Max)</label>
-                                                <input type="number" id="threshold-r3" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm outline-none focus:border-primary" value="30">
-                                            </div>
-                                            <div class="space-y-1">
-                                                <label class="text-[10px] text-text-muted font-bold">R2 (Max)</label>
-                                                <input type="number" id="threshold-r2" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm outline-none focus:border-primary" value="90">
-                                            </div>
+                <!-- Settings View -->
+                <section id="settings-view" class="view-section">
+                    <div class="settings-grid">
+                        <div class="settings-card glass">
+                            <h3>Parameter Strategi</h3>
+                            <p style="font-size: 12px; color: var(--text-dim); margin-bottom: 24px;">Atur batas (threshold) untuk setiap segmen pelanggan.</p>
+                            <div class="threshold-rows">
+                                <div class="row-group">
+                                    <h4>Recency (Hari)</h4>
+                                    <div class="inputs">
+                                        <div class="input-inline">
+                                            <label>Core Max</label>
+                                            <input type="number" id="r-core" value="30">
+                                        </div>
+                                        <div class="input-inline">
+                                            <label>Growth Max</label>
+                                            <input type="number" id="r-growth" value="90">
+                                        </div>
+                                        <div class="input-inline">
+                                            <label>Passive Max</label>
+                                            <input type="number" id="r-passive" value="180">
                                         </div>
                                     </div>
-                                    <div class="space-y-4">
-                                        <h4 class="text-xs font-extrabold text-growth uppercase tracking-widest">Frequency (Order)</h4>
-                                        <div class="space-y-3">
-                                            <div class="space-y-1">
-                                                <label class="text-[10px] text-text-muted font-bold">F3 (Min)</label>
-                                                <input type="number" id="threshold-f3" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm outline-none focus:border-primary" value="10">
-                                            </div>
-                                            <div class="space-y-1">
-                                                <label class="text-[10px] text-text-muted font-bold">F2 (Min)</label>
-                                                <input type="number" id="threshold-f2" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm outline-none focus:border-primary" value="3">
-                                            </div>
+                                </div>
+                                <div class="row-group">
+                                    <h4>Frequency (Kali)</h4>
+                                    <div class="inputs">
+                                        <div class="input-inline">
+                                            <label>Core Min</label>
+                                            <input type="number" id="f-core" value="10">
                                         </div>
-                                    </div>
-                                    <div class="space-y-4">
-                                        <h4 class="text-xs font-extrabold text-passive uppercase tracking-widest">Monetary (Rp)</h4>
-                                        <div class="space-y-3">
-                                            <div class="space-y-1">
-                                                <label class="text-[10px] text-text-muted font-bold">M3 (Min)</label>
-                                                <input type="number" id="threshold-m3" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm outline-none focus:border-primary" value="1000000">
-                                            </div>
-                                            <div class="space-y-1">
-                                                <label class="text-[10px] text-text-muted font-bold">M2 (Min)</label>
-                                                <input type="number" id="threshold-m2" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm outline-none focus:border-primary" value="250000">
-                                            </div>
+                                        <div class="input-inline">
+                                            <label>Growth Min</label>
+                                            <input type="number" id="f-growth" value="3">
+                                        </div>
+                                        <div class="input-inline">
+                                            <label>Passive Min</label>
+                                            <input type="number" id="f-passive" value="1">
                                         </div>
                                     </div>
                                 </div>
                             </div>
-
-                            <!-- Custom Strategies -->
-                            <div class="xl:col-span-2 bg-bg-surface/60 backdrop-blur-xl border border-white/10 p-8 lg:p-12 rounded-[2.5rem] shadow-2xl space-y-8">
-                                <div class="flex items-center gap-4 text-xl font-bold">
-                                    <div class="w-12 h-12 bg-white/5 rounded-2xl flex items-center justify-center text-accent border border-white/10"><i class="ph ph-lightbulb"></i></div>
-                                    <h3>Strategi Segmentasi</h3>
-                                </div>
-                                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                                    <div class="space-y-2">
-                                        <label class="text-xs font-bold text-core uppercase tracking-widest">Strategi Core</label>
-                                        <textarea id="strat-core" class="w-full bg-white/5 border border-white/10 rounded-2xl px-4 py-3 outline-none focus:border-core transition-colors resize-none" rows="3"></textarea>
-                                    </div>
-                                    <div class="space-y-2">
-                                        <label class="text-xs font-bold text-growth uppercase tracking-widest">Strategi Growth</label>
-                                        <textarea id="strat-growth" class="w-full bg-white/5 border border-white/10 rounded-2xl px-4 py-3 outline-none focus:border-growth transition-colors resize-none" rows="3"></textarea>
-                                    </div>
-                                    <div class="space-y-2">
-                                        <label class="text-xs font-bold text-passive uppercase tracking-widest">Strategi Passive</label>
-                                        <textarea id="strat-passive" class="w-full bg-white/5 border border-white/10 rounded-2xl px-4 py-3 outline-none focus:border-passive transition-colors resize-none" rows="3"></textarea>
-                                    </div>
-                                    <div class="space-y-2">
-                                        <label class="text-xs font-bold text-churn uppercase tracking-widest">Strategi Churn</label>
-                                        <textarea id="strat-churn" class="w-full bg-white/5 border border-white/10 rounded-2xl px-4 py-3 outline-none focus:border-churn transition-colors resize-none" rows="3"></textarea>
-                                    </div>
-                                </div>
-                                <div class="flex justify-end pt-4">
-                                    <button id="btn-save-settings" class="w-full sm:w-auto bg-primary hover:bg-primary/90 text-white font-bold px-12 py-4 rounded-xl shadow-lg shadow-primary/20 transition-all active:scale-95">Simpan Konfigurasi</button>
-                                </div>
-                            </div>
                         </div>
-                    </section>
-                </div>
+
+                        <div class="settings-card glass">
+                            <h3>Isi Strategi</h3>
+                            <p style="font-size: 12px; color: var(--text-dim); margin-bottom: 24px;">Sesuaikan pesan strategi untuk setiap segmen.</p>
+                            <div class="input-group">
+                                <label>Strategi Segment Core</label>
+                                <textarea id="msg-core" class="glass-textarea">VIP Program & Loyalty Reward - Berikan akses eksklusif dan apresiasi personal.</textarea>
+                            </div>
+                            <div class="input-group">
+                                <label>Strategi Segment Growth</label>
+                                <textarea id="msg-growth" class="glass-textarea">Onboarding & Upselling - Tawarkan produk komplementer (bundling) dan edukasi.</textarea>
+                            </div>
+                            <div class="input-group">
+                                <label>Strategi Segment Passive</label>
+                                <textarea id="msg-passive" class="glass-textarea">Reminder & Retargeting - Kirim pengingat stok habis dan promo terbatas.</textarea>
+                            </div>
+                            <div class="input-group">
+                                <label>Strategi Segment Churn</label>
+                                <textarea id="msg-churn" class="glass-textarea">Win-back Campaign & Reactivation - Berikan diskon "Comeback" khusus untuk menarik mereka kembali.</textarea>
+                            </div>
+                            <button class="action-btn primary" id="btn-save-settings">
+                                <i class="ph ph-floppy-disk"></i>
+                                Simpan Konfigurasi
+                            </button>
+                        </div>
+                    </div>
+                </section>
+
             </div>
         </main>
     </div>
 
-    <!-- Toast Container -->
-    <div id="toast-container" class="fixed top-8 right-8 z-[200] flex flex-col gap-3 pointer-events-none"></div>
-
-    <!-- Custom Modal -->
-    <div id="custom-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[300] hidden flex items-center justify-center p-4">
-        <div class="w-full max-w-sm bg-bg-surface/90 backdrop-blur-2xl border border-white/10 p-8 rounded-[2.5rem] shadow-2xl text-center space-y-6">
-            <div id="modal-icon" class="w-16 h-16 bg-white/5 rounded-2xl flex items-center justify-center text-3xl mx-auto border border-white/10"></div>
-            <div class="space-y-2">
-                <h3 id="modal-title" class="text-xl font-bold">Konfirmasi</h3>
-                <p id="modal-message" class="text-sm text-text-dim">Apakah Anda yakin?</p>
-            </div>
-            <div class="grid grid-cols-2 gap-4 pt-4">
-                <button id="modal-cancel" class="bg-white/5 hover:bg-white/10 border border-white/10 py-3 rounded-xl font-bold transition-all">Batal</button>
-                <button id="modal-confirm" class="bg-primary hover:bg-primary/90 text-white py-3 rounded-xl font-bold shadow-lg shadow-primary/20 transition-all">Ya, Lanjutkan</button>
-            </div>
-        </div>
-    </div>
+    <!-- Toast Notifications -->
+    <div id="toast-container" class="toast-container"></div>
 
     <script type="module" src="/src/main.js"></script>
 </body>

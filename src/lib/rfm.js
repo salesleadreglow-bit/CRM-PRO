@@ -53,22 +53,22 @@ export function calculateRFM(transactions, settings) {
         // 1. CHURN: R = 1 (Prioritas utama risiko)
         if (rScore === 1) {
             segmentation = 'Churn';
-            character = 'Sudah lama tidak transaksi, customer tidak aktif, risiko hilang tinggi.';
+            character = 'sudah lama tidak transaksi, customer tidak aktif, risiko hilang tinggi';
         }
         // 2. CORE: R = 3 dan F >= 2
         else if (rScore === 3 && fScore >= 2) {
             segmentation = 'Core';
-            character = 'Customer paling aktif, sering transaksi, customer inti bisnis, kontribusi revenue tinggi.';
+            character = 'customer paling aktif, sering transaksi, customer inti bisnis, kontribusi revenue tinggi';
         }
         // 3. GROWTH: (R=3 & F=1) ATAU (R=2 & (F>=2 atau M=3))
         else if ((rScore === 3 && fScore === 1) || (rScore === 2 && (fScore >= 2 || mScore === 3))) {
             segmentation = 'Growth';
-            character = 'Customer potensial, mulai berkembang, mulai menunjukkan value, berpotensi menjadi CORE.';
+            character = 'customer potensial, mulai berkembang, mulai menunjukkan value, berpotensi menjadi CORE';
         }
         // 4. PASSIVE: R = 2, F = 1, M <= 2
         else {
             segmentation = 'Passive';
-            character = 'Customer biasa, transaksi belum kuat, belum repeat, aktivitas masih rendah.';
+            character = 'customer biasa, transaksi belum kuat, belum repeat, aktivitas masih rendah';
         }
 
         return {
