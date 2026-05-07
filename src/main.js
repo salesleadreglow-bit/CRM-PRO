@@ -1,6 +1,7 @@
 import { initSupabase, fetchTransactions, testConnection, signIn, signUp, signOut, getSession, resetPassword, updateUserPassword, getSupabase } from './lib/supabase';
 import { calculateRFM } from './lib/rfm';
 import { processCSV } from './lib/uploader';
+import './style.css';
 import * as XLSX from 'xlsx';
 
 // --- State Management ---
