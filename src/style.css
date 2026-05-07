@@ -238,6 +238,13 @@ body {
     flex: 1;
     padding: 0 16px;
     overflow-y: auto;
+    scrollbar-width: none; /* Untuk Firefox */
+    -ms-overflow-style: none;  /* Untuk IE/Edge */
+}
+
+/* Untuk Chrome, Safari, dan Opera */
+.sidebar-nav::-webkit-scrollbar {
+    display: none;
 }
 
 .nav-group {
@@ -877,6 +884,7 @@ tbody tr:hover {
 }
 
 /* Toast Notifications */
+
 .toast-container {
     position: fixed;
     top: 32px;
