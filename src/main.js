@@ -299,16 +299,11 @@ function setupEventListeners() {
         showLoader('Sedang logout...');
         try {
             await signOut();
-            state.transactions = [];
-            state.rfmData = [];
-            renderDashboard();
-            renderBroadcast();
-            loginOverlay.classList.add('active');
-            showToast('Berhasil logout');
+            // Membersihkan state dan reload adalah cara paling handal untuk logout total
+            location.reload(); 
         } catch (err) {
             console.error("Logout error:", err);
-        } finally {
-            hideLoader();
+            location.reload(); // Tetap reload jika error agar kembali ke login
         }
     });
 
