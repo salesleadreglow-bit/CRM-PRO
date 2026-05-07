@@ -85,6 +85,59 @@ html, body {
     flex-direction: column;
     z-index: 100;
     transition: all 0.3s;
+    padding: 32px 0;
+}
+
+.sidebar-header {
+    padding: 0 32px;
+    margin-bottom: 40px;
+}
+
+.sidebar-header h1 {
+    font-size: 18px;
+    font-weight: 800;
+    background: linear-gradient(to right, #fff, var(--text-dim));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.nav-menu {
+    flex: 1;
+    padding: 0 16px;
+}
+
+.nav-item {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 14px 20px;
+    color: var(--text-dim);
+    text-decoration: none;
+    border-radius: var(--radius-md);
+    margin-bottom: 4px;
+    transition: all 0.3s;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.nav-item i {
+    font-size: 20px;
+}
+
+.nav-item:hover, .nav-item.active {
+    background: rgba(99, 102, 241, 0.1);
+    color: var(--text-main);
+}
+
+.nav-item.active {
+    background: var(--primary);
+    box-shadow: var(--shadow-glow);
+}
+
+.sidebar-footer {
+    padding: 24px;
+    border-top: 1px solid var(--glass-border);
 }
 
 .main-content {
@@ -96,12 +149,38 @@ html, body {
 }
 
 .top-bar {
-    height: 80px;
+    height: 90px;
     padding: 0 40px;
     display: flex;
     justify-content: space-between;
     align-items: center;
     border-bottom: 1px solid var(--glass-border);
+    background: rgba(5, 7, 10, 0.5);
+    backdrop-filter: blur(10px);
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+}
+
+.user-info {
+    text-align: right;
+    display: flex;
+    flex-direction: column;
+}
+
+.user-email {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-main);
+}
+
+.user-role {
+    font-size: 11px;
+    color: var(--text-muted);
+    text-transform: uppercase;
 }
 
 .content-scroll {
@@ -143,15 +222,18 @@ table {
     width: 100%;
     border-collapse: collapse;
     table-layout: fixed;
-    font-size: 12px;
+    font-size: 13px; /* Naik sedikit dari 12px agar lebih terbaca */
 }
 
 th {
     text-align: left;
-    padding: 12px 16px;
-    font-size: 10px;
+    padding: 14px 16px;
+    font-size: 11px;
     text-transform: uppercase;
+    letter-spacing: 0.8px;
     color: var(--text-muted);
+    font-weight: 700;
+    background: rgba(255,255,255,0.02);
     border-bottom: 2px solid var(--glass-border);
 }
 
