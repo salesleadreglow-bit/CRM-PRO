@@ -171,9 +171,10 @@ body {
 /* App Layout */
 .app-container {
     display: flex;
-    min-height: 100vh;
+    height: 100vh;
     width: 100%;
     background: var(--bg-main);
+    overflow: hidden;
     position: relative;
 }
 
@@ -333,10 +334,10 @@ body {
     flex: 1;
     display: flex;
     flex-direction: column;
-    min-height: 100vh;
+    height: 100vh;
     background: radial-gradient(circle at top right, rgba(99, 102, 241, 0.05), transparent 400px);
     transition: all 0.3s;
-    overflow-x: hidden;
+    overflow: hidden;
 }
 
 .top-bar {
