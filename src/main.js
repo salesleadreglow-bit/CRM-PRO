@@ -667,7 +667,9 @@ async function handleFileUpload(file) {
         }, userId);
         
         if (result.errors && result.errors.length > 0) {
-            showToast('Selesai dengan beberapa masalah', 'error');
+            const firstError = result.errors[0];
+            showToast(`Gagal: ${firstError.message || 'Error Database'}`, 'error');
+            console.error('Upload Errors:', result.errors);
         } else {
             showToast(`Berhasil mengunggah ${result.successCount} transaksi!`, 'success');
         }
