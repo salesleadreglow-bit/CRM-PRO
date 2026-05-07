@@ -294,6 +294,12 @@ function setupEventListeners() {
     // Export
     document.getElementById('btn-export-excel').addEventListener('click', exportToExcel);
 
+    // Logout
+    document.getElementById('btn-logout').addEventListener('click', () => {
+        loginOverlay.classList.add('active');
+        showToast('Berhasil logout');
+    });
+
     // Upload
     const fileInput = document.getElementById('file-input');
     const dropZone = document.getElementById('drop-zone');
