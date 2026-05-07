@@ -44,6 +44,8 @@ export function calculateRFM(transactions, settings) {
         if (c.totalRevenue >= settings.m3) mScore = 3;
         else if (c.totalRevenue >= settings.m2) mScore = 2;
 
+        const rfmScoring = `${rScore}${fScore}${mScore}`;
+
         // LOGIKA BARU BERBASIS PERILAKU (RULE FINAL)
         let segmentation = 'Passive';
         let character = '';
