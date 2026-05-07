@@ -416,15 +416,33 @@ function setupEventListeners() {
         });
     });
 
-    // Close sidebar when clicking nav-item (on mobile)
+    // Mobile Menu Toggle
+    const btnMenuMobile = document.getElementById('btn-menu-mobile');
+    const sidebar = document.querySelector('.sidebar');
+    const mainContent = document.querySelector('.main-content');
+    
+    if (btnMenuMobile && sidebar) {
+        btnMenuMobile.addEventListener('click', () => {
+            sidebar.classList.toggle('mobile-active');
+        });
+    }
+
+    // Close sidebar when clicking on a nav item (on mobile)
     const navItemsList = document.querySelectorAll('.nav-item');
     navItemsList.forEach(item => {
         item.addEventListener('click', () => {
-            if (window.innerWidth <= 1024 && sidebar) {
-                sidebar.classList.remove('active');
-            }
+            if (sidebar) sidebar.classList.remove('mobile-active');
         });
     });
+
+    // Close sidebar when clicking main content (on mobile)
+    if (mainContent) {
+        mainContent.addEventListener('click', () => {
+            if (sidebar && sidebar.classList.contains('mobile-active')) {
+                sidebar.classList.remove('mobile-active');
+            }
+        });
+    }
 
     // Pagination Controls
     const btnRfmPrev = document.getElementById('btn-rfm-prev');

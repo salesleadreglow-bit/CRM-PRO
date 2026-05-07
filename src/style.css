@@ -189,7 +189,8 @@ body {
     border-right: 1px solid var(--glass-border);
     display: flex;
     flex-direction: column;
-    z-index: 100;
+    z-index: 1000;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .sidebar-header {
@@ -976,14 +977,16 @@ tbody tr:hover {
 @media (max-width: 1024px) {
     .sidebar {
         position: fixed;
-        left: -280px;
+        left: 0;
         top: 0;
         bottom: 0;
-        transition: all 0.3s ease;
+        transform: translateX(-100%);
+        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        z-index: 9999;
     }
 
-    .sidebar.active {
-        left: 0;
+    .sidebar.mobile-active {
+        transform: translateX(0);
     }
 
     .main-content {
