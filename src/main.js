@@ -625,13 +625,8 @@ function exportToExcel() {
 
     const dataToExport = filtered.map(row => ({
         'Nama Pelanggan': row.name,
-        'ID Pelanggan': row.customer_id,
         'No. WhatsApp': row.phone,
-        'Revenue': row.revenue,
-        'Frequency': row.frequency,
-        'Recency (Hari)': row.recency_days,
-        'RFM Score': row.score,
-        'Segmentasi': row.segmentation,
+        'Karakter': row.character,
         'Strategi': state.settings[`strat${row.segmentation}`] || '-'
     }));
 
@@ -639,9 +634,13 @@ function exportToExcel() {
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, "CRM_Broadcast");
 
-    // Auto-width for columns
-    const max_width = dataToExport.reduce((w, r) => Math.max(w, r.Strategi.length), 10);
-    worksheet["!cols"] = [ { wch: 20 }, { wch: 15 }, { wch: 15 }, { wch: 12 }, { wch: 10 }, { wch: 12 }, { wch: 10 }, { wch: 12 }, { wch: 50 } ];
+    // Atur Lebar Kolom agar Rapi
+    worksheet["!cols"] = [ 
+        { wch: 25 }, // Nama
+        { wch: 18 }, // WhatsApp
+        { wch: 45 }, // Karakter
+        { wch: 50 }  // Strategi
+    ];
 
     const timestamp = new Date().toISOString().split('T')[0];
     XLSX.writeFile(workbook, `CRM_Broadcast_${filter}_${timestamp}.xlsx`);
