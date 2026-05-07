@@ -20,7 +20,10 @@ let state = {
         stratGrowth: localStorage.getItem('stratGrowth') || 'Onboarding & Upselling - Tawarkan produk komplementer (bundling) dan edukasi.',
         stratPassive: localStorage.getItem('stratPassive') || 'Reminder & Retargeting - Kirim pengingat stok habis dan promo terbatas.',
         stratChurn: localStorage.getItem('stratChurn') || 'Win-back Campaign & Reactivation - Berikan diskon "Comeback" khusus untuk menarik mereka kembali.'
-    }
+    },
+    currentPageRFM: 1,
+    currentPageBroadcast: 1,
+    pageSize: 10
 };
 
 // --- Custom UI Helpers ---
@@ -152,24 +155,34 @@ async function refreshData() {
 
 function renderDashboard(filteredData = null) {
     const rfm = filteredData || state.rfmData;
+    const totalItems = rfm.length;
+    const totalPages = Math.ceil(totalItems / state.pageSize) || 1;
     
-    // Update Counts (always show global counts for the 4 cards)
+    // Clamp current page
+    if (state.currentPageRFM > totalPages) state.currentPageRFM = totalPages;
+    if (state.currentPageRFM < 1) state.currentPageRFM = 1;
+
+    // Update Counts (always show global counts)
     const globalRfm = state.rfmData;
     document.getElementById('count-core').textContent = globalRfm.filter(c => c.segmentation === 'Core').length;
     document.getElementById('count-growth').textContent = globalRfm.filter(c => c.segmentation === 'Growth').length;
     document.getElementById('count-passive').textContent = globalRfm.filter(c => c.segmentation === 'Passive').length;
     document.getElementById('count-churn').textContent = globalRfm.filter(c => c.segmentation === 'Churn').length;
 
+    // Slice for pagination
+    const start = (state.currentPageRFM - 1) * state.pageSize;
+    const paginated = rfm.slice(start, start + state.pageSize);
+
     // Render Table
     const tbody = document.querySelector('#table-rfm tbody');
     tbody.innerHTML = '';
     
-    rfm.forEach(row => {
+    paginated.forEach(row => {
         const tr = document.createElement('tr');
         tr.innerHTML = `
-            <td>
-                <div style="font-weight:600">${row.name}</div>
-                <div style="font-size:11px;color:var(--text-muted)">${row.customer_id}</div>
+            <td title="${row.name}">
+                <div style="font-weight:600; overflow:hidden; text-overflow:ellipsis">${row.name}</div>
+                <div style="font-size:10px;color:var(--text-muted)">${row.customer_id}</div>
             </td>
             <td>${row.last_order}</td>
             <td style="font-weight:600">Rp ${row.revenue.toLocaleString('id-ID')}</td>
@@ -184,30 +197,52 @@ function renderDashboard(filteredData = null) {
         tbody.appendChild(tr);
     });
     
-    document.getElementById('rfm-table-info').textContent = `Menampilkan ${rfm.length} pelanggan tersegmentasi.`;
+    // Update Pagination UI
+    document.getElementById('rfm-page-num').textContent = `Hal. ${state.currentPageRFM} / ${totalPages}`;
+    document.getElementById('rfm-table-info').textContent = `Menampilkan ${start + 1}-${Math.min(start + state.pageSize, totalItems)} dari ${totalItems} pelanggan.`;
+    
+    document.getElementById('btn-rfm-prev').disabled = (state.currentPageRFM === 1);
+    document.getElementById('btn-rfm-next').disabled = (state.currentPageRFM === totalPages);
 }
 
 function renderBroadcast() {
     const rfm = state.rfmData;
     const filter = document.getElementById('filter-segment-broadcast').value;
+    const filtered = filter === 'all' ? rfm : rfm.filter(c => c.segmentation === filter);
+    
+    const totalItems = filtered.length;
+    const totalPages = Math.ceil(totalItems / state.pageSize) || 1;
+
+    // Clamp current page
+    if (state.currentPageBroadcast > totalPages) state.currentPageBroadcast = totalPages;
+    if (state.currentPageBroadcast < 1) state.currentPageBroadcast = 1;
+
+    const start = (state.currentPageBroadcast - 1) * state.pageSize;
+    const paginated = filtered.slice(start, start + state.pageSize);
+
     const tbody = document.querySelector('#table-broadcast tbody');
     tbody.innerHTML = '';
 
-    const filtered = filter === 'all' ? rfm : rfm.filter(c => c.segmentation === filter);
-
-    filtered.forEach(row => {
+    paginated.forEach(row => {
         const strategy = state.settings[`strat${row.segmentation}`] || 'Lakukan profiling lebih lanjut.';
 
         const tr = document.createElement('tr');
         tr.innerHTML = `
-            <td>${row.name}</td>
+            <td title="${row.name}">${row.name}</td>
             <td>${row.customer_id}</td>
             <td>${row.phone || '-'}</td>
             <td><span class="badge badge-${row.segmentation.toLowerCase()}">${row.segmentation}</span></td>
-            <td style="color:var(--text-dim);font-style:italic">${strategy}</td>
+            <td style="color:var(--text-dim);font-size:11px;white-space:normal">${strategy}</td>
         `;
         tbody.appendChild(tr);
     });
+
+    // Update Pagination UI
+    document.getElementById('broadcast-page-num').textContent = `Hal. ${state.currentPageBroadcast} / ${totalPages}`;
+    document.getElementById('broadcast-table-info').textContent = `Menampilkan ${start + 1}-${Math.min(start + state.pageSize, totalItems)} dari ${totalItems} pelanggan.`;
+    
+    document.getElementById('btn-broadcast-prev').disabled = (state.currentPageBroadcast === 1);
+    document.getElementById('btn-broadcast-next').disabled = (state.currentPageBroadcast === totalPages);
 }
 
 // --- Navigation & UI ---
@@ -353,6 +388,50 @@ function setupEventListeners() {
             }
         });
     });
+
+    // Pagination Controls
+    const btnRfmPrev = document.getElementById('btn-rfm-prev');
+    const btnRfmNext = document.getElementById('btn-rfm-next');
+    const btnBroadcastPrev = document.getElementById('btn-broadcast-prev');
+    const btnBroadcastNext = document.getElementById('btn-broadcast-next');
+
+    if (btnRfmPrev) {
+        btnRfmPrev.addEventListener('click', () => {
+            if (state.currentPageRFM > 1) {
+                state.currentPageRFM--;
+                renderDashboard();
+            }
+        });
+    }
+    if (btnRfmNext) {
+        btnRfmNext.addEventListener('click', () => {
+            const totalPages = Math.ceil(state.rfmData.length / state.pageSize);
+            if (state.currentPageRFM < totalPages) {
+                state.currentPageRFM++;
+                renderDashboard();
+            }
+        });
+    }
+
+    if (btnBroadcastPrev) {
+        btnBroadcastPrev.addEventListener('click', () => {
+            if (state.currentPageBroadcast > 1) {
+                state.currentPageBroadcast--;
+                renderBroadcast();
+            }
+        });
+    }
+    if (btnBroadcastNext) {
+        btnBroadcastNext.addEventListener('click', () => {
+            const filter = document.getElementById('filter-segment-broadcast').value;
+            const filteredCount = filter === 'all' ? state.rfmData.length : state.rfmData.filter(c => c.segmentation === filter).length;
+            const totalPages = Math.ceil(filteredCount / state.pageSize);
+            if (state.currentPageBroadcast < totalPages) {
+                state.currentPageBroadcast++;
+                renderBroadcast();
+            }
+        });
+    }
 }
 
 function handleSearch(e) {

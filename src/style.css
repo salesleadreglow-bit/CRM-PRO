@@ -512,7 +512,7 @@ body {
 }
 
 .card-header {
-    padding: 32px;
+    padding: 24px 32px;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -520,24 +520,24 @@ body {
 }
 
 .header-title h2 {
-    font-size: 18px;
+    font-size: 16px;
     font-weight: 700;
     margin-bottom: 4px;
 }
 
 .header-title p {
-    font-size: 13px;
+    font-size: 12px;
     color: var(--text-dim);
 }
 
 .search-box {
     position: relative;
-    width: 300px;
+    width: 250px;
 }
 
 .search-box i {
     position: absolute;
-    left: 16px;
+    left: 14px;
     top: 50%;
     transform: translateY(-50%);
     color: var(--text-muted);
@@ -547,65 +547,111 @@ body {
     width: 100%;
     background: rgba(0,0,0,0.2);
     border: 1px solid var(--glass-border);
-    padding: 12px 16px 12px 44px;
-    border-radius: var(--radius-md);
+    padding: 8px 12px 8px 36px;
+    border-radius: 8px;
     color: white;
-    font-family: inherit;
+    font-size: 13px;
     outline: none;
     transition: all 0.3s;
 }
 
 .search-box input:focus {
     border-color: var(--primary);
-    box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
 }
 
 .table-container {
     width: 100%;
-    overflow-x: auto;
+    overflow-x: hidden; /* Lock horizontal scroll */
 }
 
 table {
     width: 100%;
     border-collapse: collapse;
-    table-layout: auto; /* Biarkan kolom menyesuaikan isi */
+    table-layout: fixed; /* Mandat presisi kolom */
+    font-size: 12px; /* Lebih kecil untuk presisi */
 }
 
 th {
     text-align: left;
-    padding: 16px 32px;
-    font-size: 11px;
+    padding: 12px 16px;
+    font-size: 10px;
     text-transform: uppercase;
-    letter-spacing: 1px;
+    letter-spacing: 0.5px;
     color: var(--text-muted);
     font-weight: 700;
     background: rgba(255,255,255,0.02);
-    white-space: nowrap; /* Header tetap satu baris */
+    border-bottom: 2px solid var(--glass-border);
 }
 
 td {
-    padding: 16px 32px;
-    font-size: 14px;
+    padding: 10px 16px;
     border-bottom: 1px solid var(--glass-border);
-    vertical-align: top;
-    line-height: 1.6;
-    word-break: break-word; /* Pecah kata jika terlalu panjang */
+    vertical-align: middle;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis; /* Potong teks jika terlalu panjang */
 }
 
-/* Khusus kolom strategi di Master Broadcast */
-#table-broadcast td:last-child {
-    min-width: 400px; /* Lebih lebar lagi */
-    white-space: normal;
-}
+/* Lebar Kolom Presisi Dashboard */
+#table-rfm th:nth-child(1), #table-rfm td:nth-child(1) { width: 18%; } /* Nama */
+#table-rfm th:nth-child(2), #table-rfm td:nth-child(2) { width: 12%; } /* Date */
+#table-rfm th:nth-child(3), #table-rfm td:nth-child(3) { width: 15%; } /* Revenue */
+#table-rfm th:nth-child(4), #table-rfm td:nth-child(4) { width: 6%; }  /* Freq */
+#table-rfm th:nth-child(5), #table-rfm td:nth-child(5) { width: 8%; }  /* Recency */
+#table-rfm th:nth-child(6), #table-rfm td:nth-child(6) { width: 4%; }  /* R */
+#table-rfm th:nth-child(7), #table-rfm td:nth-child(7) { width: 4%; }  /* F */
+#table-rfm th:nth-child(8), #table-rfm td:nth-child(8) { width: 4%; }  /* M */
+#table-rfm th:nth-child(9), #table-rfm td:nth-child(9) { width: 12%; } /* Score */
+#table-rfm th:nth-child(10), #table-rfm td:nth-child(10) { width: 17%; } /* Segment */
+
+/* Lebar Kolom Presisi Broadcast */
+#table-broadcast th:nth-child(1), #table-broadcast td:nth-child(1) { width: 20%; }
+#table-broadcast th:nth-child(2), #table-broadcast td:nth-child(2) { width: 15%; }
+#table-broadcast th:nth-child(3), #table-broadcast td:nth-child(3) { width: 15%; }
+#table-broadcast th:nth-child(4), #table-broadcast td:nth-child(4) { width: 15%; }
+#table-broadcast th:nth-child(5), #table-broadcast td:nth-child(5) { width: 35%; white-space: normal; } /* Strategi boleh bungkus */
 
 tbody tr:hover {
     background: var(--glass-hover);
 }
 
 .card-footer {
-    padding: 20px 32px;
-    font-size: 13px;
-    color: var(--text-dim);
+    padding: 16px 32px;
+    border-top: 1px solid var(--glass-border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(0,0,0,0.1);
+}
+
+.pagination-controls {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.pagination-btn {
+    background: var(--glass);
+    border: 1px solid var(--glass-border);
+    color: var(--text-main);
+    width: 32px;
+    height: 32px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.pagination-btn:hover:not(:disabled) {
+    background: var(--primary);
+    border-color: var(--primary);
+}
+
+.pagination-btn:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
 }
 
 /* Badges */
