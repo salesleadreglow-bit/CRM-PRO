@@ -12,10 +12,8 @@ let state = {
         supabaseKey: localStorage.getItem('supabaseKey') || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZlZHp2bHNqeG1va2FpcnN0am91Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgwNDE5MDQsImV4cCI6MjA5MzYxNzkwNH0.h5d35pLcy1bcqcevXq_Hxtv423zdL4_9XApoLVUV9vQ',
         r3: parseInt(localStorage.getItem('r-core')) || 30,
         r2: parseInt(localStorage.getItem('r-growth')) || 90,
-        r1: parseInt(localStorage.getItem('r-passive')) || 180,
         f3: parseInt(localStorage.getItem('f-core')) || 10,
         f2: parseInt(localStorage.getItem('f-growth')) || 3,
-        f1: parseInt(localStorage.getItem('f-passive')) || 1,
         m3: parseInt(localStorage.getItem('m-core')) || 1000000,
         m2: parseInt(localStorage.getItem('m-growth')) || 250000,
         stratCore: localStorage.getItem('msg-core') || 'VIP Program & Loyalty Reward - Berikan akses eksklusif dan apresiasi personal.',
@@ -360,10 +358,8 @@ function loadSettingsIntoUI() {
     const s = state.settings;
     document.getElementById('r-core').value = s.r3;
     document.getElementById('r-growth').value = s.r2;
-    document.getElementById('r-passive').value = s.r1;
     document.getElementById('f-core').value = s.f3;
     document.getElementById('f-growth').value = s.f2;
-    document.getElementById('f-passive').value = s.f1;
     document.getElementById('m-core').value = s.m3;
     document.getElementById('m-growth').value = s.m2;
     document.getElementById('msg-core').value = s.stratCore;
@@ -375,10 +371,8 @@ function loadSettingsIntoUI() {
 function saveSettings() {
     localStorage.setItem('r-core', document.getElementById('r-core').value);
     localStorage.setItem('r-growth', document.getElementById('r-growth').value);
-    localStorage.setItem('r-passive', document.getElementById('r-passive').value);
     localStorage.setItem('f-core', document.getElementById('f-core').value);
     localStorage.setItem('f-growth', document.getElementById('f-growth').value);
-    localStorage.setItem('f-passive', document.getElementById('f-passive').value);
     localStorage.setItem('m-core', document.getElementById('m-core').value);
     localStorage.setItem('m-growth', document.getElementById('m-growth').value);
     localStorage.setItem('msg-core', document.getElementById('msg-core').value);
