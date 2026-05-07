@@ -1000,13 +1000,17 @@ tbody tr:hover {
 
 @media (max-width: 768px) {
     .top-bar {
-        padding: 0 20px;
+        padding: 16px 20px;
         height: auto;
-        padding-top: 20px;
-        padding-bottom: 20px;
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 16px;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .header-left {
+        display: flex;
+        align-items: center;
+        gap: 12px;
     }
 
     .header-right {
@@ -1055,4 +1059,6 @@ tbody tr:hover {
 .mobile-only { display: none !important; }
 .icon-btn { background: var(--glass); border: 1px solid var(--glass-border); color: var(--text-main); width: 40px; height: 40px; border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 20px; transition: all 0.3s; }
 .icon-btn:hover { background: var(--glass-hover); border-color: var(--primary); }
-@media (max-width: 1024px) { .mobile-only { display: flex; } }
+@media (max-width: 1024px) { 
+    .mobile-only { display: flex !important; } 
+}
