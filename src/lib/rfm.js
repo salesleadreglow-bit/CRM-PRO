@@ -48,10 +48,26 @@ export function calculateRFM(transactions, settings) {
         const totalScore = rScore + fScore + mScore;
         
         let segmentation = 'Churn';
-        if (totalScore >= 8) segmentation = 'Core';
-        else if (totalScore >= 6) segmentation = 'Growth';
-        else if (totalScore >= 4) segmentation = 'Passive';
-        else segmentation = 'Churn';
+
+        // 1. Prioritas CHURN: Jika R = 1 (Lama tidak transaksi)
+        if (rScore === 1) {
+            segmentation = 'Churn';
+        }
+        // 2. CORE: Sangat aktif (R=3) dan sudah repeat order (F>=2)
+        else if (rScore === 3 && fScore >= 2) {
+            segmentation = 'Core';
+        }
+        // 3. GROWTH: Recent (R>=2) dengan total score tinggi (6-7) tapi belum jadi CORE
+        else if (rScore >= 2 && (totalScore >= 6)) {
+            segmentation = 'Growth';
+        }
+        // 4. PASSIVE: Recent (R>=2) dengan total score sedang (4-5)
+        else if (rScore >= 2 && (totalScore >= 4)) {
+            segmentation = 'Passive';
+        }
+        else {
+            segmentation = 'Churn';
+        }
 
         return {
             customer_id: c.id,

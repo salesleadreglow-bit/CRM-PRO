@@ -16,10 +16,10 @@ let state = {
         f2: parseInt(localStorage.getItem('f2')) || 3,
         m3: parseInt(localStorage.getItem('m3')) || 1000000,
         m2: parseInt(localStorage.getItem('m2')) || 250000,
-        stratCore: localStorage.getItem('stratCore') || 'Pertahankan dengan Loyalty Program & Eksklusivitas.',
-        stratGrowth: localStorage.getItem('stratGrowth') || 'Tawarkan Upsell & Bundling Product.',
-        stratPassive: localStorage.getItem('stratPassive') || 'Berikan Diskon Re-aktivasi & Flash Sale.',
-        stratChurn: localStorage.getItem('stratChurn') || 'Win-back campaign atau survei kepuasan.'
+        stratCore: localStorage.getItem('stratCore') || 'VIP Program & Loyalty Reward - Berikan akses eksklusif dan apresiasi personal.',
+        stratGrowth: localStorage.getItem('stratGrowth') || 'Onboarding & Upselling - Tawarkan produk komplementer (bundling) dan edukasi.',
+        stratPassive: localStorage.getItem('stratPassive') || 'Reminder & Retargeting - Kirim pengingat stok habis dan promo terbatas.',
+        stratChurn: localStorage.getItem('stratChurn') || 'Win-back Campaign & Reactivation - Berikan diskon "Comeback" khusus untuk menarik mereka kembali.'
     }
 };
 
