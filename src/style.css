@@ -171,8 +171,10 @@ body {
 /* App Layout */
 .app-container {
     display: flex;
-    height: 100vh;
+    min-height: 100vh;
     width: 100%;
+    background: var(--bg-main);
+    position: relative;
 }
 
 /* Sidebar */
@@ -331,8 +333,10 @@ body {
     flex: 1;
     display: flex;
     flex-direction: column;
-    height: 100vh;
+    min-height: 100vh;
     background: radial-gradient(circle at top right, rgba(99, 102, 241, 0.05), transparent 400px);
+    transition: all 0.3s;
+    overflow-x: hidden;
 }
 
 .top-bar {
@@ -908,19 +912,84 @@ tbody tr:hover {
     gap: 12px;
     justify-content: center;
 }
-::-webkit-scrollbar {
-    width: 8px;
+/* --- Responsive Queries --- */
+@media (max-width: 1024px) {
+    .sidebar {
+        position: fixed;
+        left: -280px;
+        top: 0;
+        bottom: 0;
+        transition: all 0.3s ease;
+    }
+
+    .sidebar.active {
+        left: 0;
+    }
+
+    .main-content {
+        margin-left: 0;
+    }
+
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
 }
 
-::-webkit-scrollbar-track {
-    background: transparent;
+@media (max-width: 768px) {
+    .top-bar {
+        padding: 0 20px;
+        height: auto;
+        padding-top: 20px;
+        padding-bottom: 20px;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+    }
+
+    .header-right {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .content-scroll {
+        padding: 20px;
+    }
+
+    .card-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+    }
+
+    .header-actions {
+        width: 100%;
+        flex-direction: column;
+    }
+
+    .search-box {
+        width: 100%;
+    }
+
+    .table-container {
+        margin: 0 -20px;
+        border-radius: 0;
+    }
 }
 
-::-webkit-scrollbar-thumb {
-    background: var(--glass-border);
-    border-radius: 4px;
+@media (min-width: 1600px) {
+    .top-bar, .content-scroll {
+        max-width: 1600px;
+        margin-left: auto;
+        margin-right: auto;
+        width: 100%;
+    }
 }
 
-::-webkit-scrollbar-thumb:hover {
-    background: var(--text-muted);
-}
+.mobile-only { display: none; }
+.icon-btn { background: var(--glass); border: 1px solid var(--glass-border); color: var(--text-main); width: 40px; height: 40px; border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 20px; transition: all 0.3s; }
+.icon-btn:hover { background: var(--glass-hover); border-color: var(--primary); }
+@media (max-width: 1024px) { .mobile-only { display: flex; } }
