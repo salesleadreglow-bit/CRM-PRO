@@ -85,7 +85,7 @@ export async function upsertTransactions(records) {
         const chunk = records.slice(i, i + chunkSize);
         const { data, error } = await supabase
             .from('transactions')
-            .upsert(chunk, { onConflict: 'order_id' })
+            .upsert(chunk, { onConflict: 'user_id,order_id' })
             .select();
         
         if (error) {
