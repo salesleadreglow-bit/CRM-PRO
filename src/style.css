@@ -1041,7 +1041,7 @@ tbody tr:hover {
     }
 }
 
-.mobile-only { display: none; }
+.mobile-only { display: none !important; }
 .icon-btn { background: var(--glass); border: 1px solid var(--glass-border); color: var(--text-main); width: 40px; height: 40px; border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 20px; transition: all 0.3s; }
 .icon-btn:hover { background: var(--glass-hover); border-color: var(--primary); }
 @media (max-width: 1024px) { .mobile-only { display: flex; } }
