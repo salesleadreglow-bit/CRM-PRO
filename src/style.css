@@ -452,9 +452,10 @@ h4 { font-size: 14px; }
 
 .content-scroll {
     flex: 1;
-    padding: 40px;
-    overflow-y: auto !important;
-    min-height: 0;
+    padding: 0; /* Remove global padding to control it per view */
+    overflow: hidden; /* Main content no longer scrolls globally */
+    display: flex;
+    flex-direction: column;
 }
 
 /* Glass Cards */
@@ -470,12 +471,16 @@ h4 { font-size: 14px; }
 .view-section {
     display: none;
     animation: slideUp 0.5s ease forwards;
-    max-width: 1400px;
+    width: 100%;
+    height: 100%;
+    max-width: 1600px;
     margin: 0 auto;
+    padding: 32px 40px;
+    flex-direction: column;
 }
 
 .view-section.active {
-    display: block;
+    display: flex;
 }
 
 @keyframes slideUp {
@@ -488,7 +493,8 @@ h4 { font-size: 14px; }
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 24px;
-    margin-bottom: 32px;
+    margin-bottom: 24px;
+    flex-shrink: 0; /* Don't shrink the stats */
 }
 
 .stat-card {
@@ -550,6 +556,11 @@ h4 { font-size: 14px; }
 /* Table Section */
 .data-card {
     padding: 0;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 0; /* Crucial for internal scroll */
+    overflow: hidden;
 }
 
 .card-header {
@@ -600,10 +611,23 @@ h4 { font-size: 14px; }
     border-color: var(--primary);
 }
 
+.card-footer {
+    padding: 12px 32px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid var(--glass-border);
+    background: rgba(0,0,0,0.2);
+    flex-shrink: 0;
+    font-size: 12px;
+}
+
 .table-container {
+    flex: 1;
     width: 100%;
-    overflow-x: auto; /* Allow scroll if absolutely necessary but try to fit */
-    padding-right: 10px; /* Space for WA button */
+    overflow-y: auto;
+    overflow-x: auto;
+    padding-right: 4px;
 }
 
 table {
@@ -658,14 +682,7 @@ tbody tr:hover {
     background: var(--glass-hover);
 }
 
-.card-footer {
-    padding: 16px 32px;
-    border-top: 1px solid var(--glass-border);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background: rgba(0,0,0,0.1);
-}
+
 
 .pagination-controls {
     display: flex;
