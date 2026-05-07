@@ -379,6 +379,25 @@ function setupEventListeners() {
         });
     }
 
+    // Stat Cards Filter
+    const statCards = document.querySelectorAll('.stat-card');
+    statCards.forEach(card => {
+        card.addEventListener('click', () => {
+            const segment = card.getAttribute('data-segment');
+            state.currentPageRFM = 1; // Reset ke hal 1 saat filter
+            if (segment === 'all') {
+                renderDashboard(state.rfmData);
+            } else {
+                const filtered = state.rfmData.filter(c => c.segmentation === segment);
+                renderDashboard(filtered);
+            }
+            
+            // Visual active state
+            statCards.forEach(c => c.classList.remove('active'));
+            card.classList.add('active');
+        });
+    });
+
     // Close sidebar when clicking nav-item (on mobile)
     const navItemsList = document.querySelectorAll('.nav-item');
     navItemsList.forEach(item => {
@@ -436,6 +455,8 @@ function setupEventListeners() {
 
 function handleSearch(e) {
     const query = e.target.value.toLowerCase().trim();
+    state.currentPageRFM = 1; // Reset ke hal 1 saat cari
+    
     if (!query) {
         renderDashboard(state.rfmData);
         return;
