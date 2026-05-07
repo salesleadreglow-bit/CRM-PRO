@@ -388,14 +388,49 @@ function setupEventListeners() {
         searchRfm.addEventListener('input', handleSearch);
     }
 
-    // Mobile Menu Toggle
-    const btnMenu = document.getElementById('btn-menu-mobile');
-    const sidebar = document.querySelector('.sidebar');
-    if (btnMenu && sidebar) {
-        btnMenu.addEventListener('click', () => {
-            sidebar.classList.toggle('active');
-        });
+function setupNavigation() {
+    const navItems = document.querySelectorAll('.nav-item');
+    const views = document.querySelectorAll('.view-section');
+    const sidebar = document.getElementById('main-sidebar');
+    const sidebarOverlay = document.getElementById('sidebar-overlay');
+    const btnMenuMobile = document.getElementById('btn-menu-mobile');
+
+    function closeSidebar() {
+        if (sidebar) sidebar.classList.add('-translate-x-full');
+        if (sidebarOverlay) sidebarOverlay.classList.add('hidden');
     }
+
+    function openSidebar() {
+        if (sidebar) sidebar.classList.remove('-translate-x-full');
+        if (sidebarOverlay) sidebarOverlay.classList.remove('hidden');
+    }
+
+    navItems.forEach(item => {
+        item.addEventListener('click', () => {
+            const target = item.dataset.target;
+            
+            // Update UI
+            navItems.forEach(ni => ni.classList.remove('active'));
+            item.classList.add('active');
+
+            // Switch views
+            views.forEach(v => {
+                v.classList.remove('active');
+                v.classList.add('hidden');
+                if (v.id === target) {
+                    v.classList.add('active');
+                    v.classList.remove('hidden');
+                }
+            });
+
+            // Close sidebar on mobile
+            if (window.innerWidth < 1024) closeSidebar();
+        });
+    });
+
+    if (btnMenuMobile) btnMenuMobile.addEventListener('click', openSidebar);
+    if (sidebarOverlay) sidebarOverlay.addEventListener('click', closeSidebar);
+}
 
     // Stat Cards Filter
     const statCards = document.querySelectorAll('.stat-card');
@@ -403,6 +438,7 @@ function setupEventListeners() {
         card.addEventListener('click', () => {
             const segment = card.getAttribute('data-segment');
             state.currentPageRFM = 1; // Reset ke hal 1 saat filter
+            
             if (segment === 'all') {
                 renderDashboard(state.rfmData);
             } else {
@@ -411,38 +447,10 @@ function setupEventListeners() {
             }
             
             // Visual active state
-            statCards.forEach(c => c.classList.remove('active'));
-            card.classList.add('active');
+            statCards.forEach(c => c.classList.remove('ring-2', 'ring-primary'));
+            card.classList.add('ring-2', 'ring-primary');
         });
     });
-
-    // Mobile Menu Toggle
-    const btnMenuMobile = document.getElementById('btn-menu-mobile');
-    const sidebar = document.querySelector('.sidebar');
-    const mainContent = document.querySelector('.main-content');
-    
-    if (btnMenuMobile && sidebar) {
-        btnMenuMobile.addEventListener('click', () => {
-            sidebar.classList.toggle('mobile-active');
-        });
-    }
-
-    // Close sidebar when clicking on a nav item (on mobile)
-    const navItemsList = document.querySelectorAll('.nav-item');
-    navItemsList.forEach(item => {
-        item.addEventListener('click', () => {
-            if (sidebar) sidebar.classList.remove('mobile-active');
-        });
-    });
-
-    // Close sidebar when clicking main content (on mobile)
-    if (mainContent) {
-        mainContent.addEventListener('click', () => {
-            if (sidebar && sidebar.classList.contains('mobile-active')) {
-                sidebar.classList.remove('mobile-active');
-            }
-        });
-    }
 
     // Pagination Controls
     const btnRfmPrev = document.getElementById('btn-rfm-prev');
