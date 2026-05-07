@@ -264,34 +264,7 @@ function renderBroadcast() {
     if (btnNext) btnNext.disabled = (state.currentPageBroadcast === totalPages);
 }
 
-// --- Navigation & UI ---
-function setupNavigation() {
-    navItems.forEach(item => {
-        item.addEventListener('click', () => {
-            const target = item.getAttribute('data-target');
-            switchView(target);
-        });
-    });
-}
-
-function switchView(viewId) {
-    if (!views) return;
-    views.forEach(v => v.classList.remove('active'));
-    if (navItems) navItems.forEach(n => n.classList.remove('active'));
-    
-    const targetView = document.getElementById(viewId);
-    if (targetView) targetView.classList.add('active');
-    
-    const navItem = document.querySelector(`[data-target="${viewId}"]`);
-    if (navItem) {
-        navItem.classList.add('active');
-        // Update Header
-        const span = navItem.querySelector('span');
-        if (span) {
-            document.getElementById('view-title').textContent = span.textContent;
-        }
-    }
-}
+// --- Helpers ---
 
 function showLoader(msg) {
     if (!loader) return;
@@ -346,6 +319,17 @@ function setupEventListeners() {
     });
 
     document.getElementById('go-to-reset').addEventListener('click', handleForgotPassword);
+
+    // Reset Config
+    const btnResetConfig = document.getElementById('btn-reset-config');
+    if (btnResetConfig) {
+        btnResetConfig.addEventListener('click', () => {
+            if (confirm('Bersihkan semua konfigurasi dan kembali ke setelan pabrik?')) {
+                localStorage.clear();
+                location.reload();
+            }
+        });
+    }
 
     // Update Password
     document.getElementById('update-password-form').addEventListener('submit', handleUpdatePassword);

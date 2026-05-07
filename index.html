@@ -18,64 +18,80 @@
     <div id="sidebar-overlay" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[45] hidden lg:hidden transition-opacity duration-300"></div>
 
     <!-- Login Overlay -->
-    <div id="login-overlay" class="fixed inset-0 bg-bg-deep/80 backdrop-blur-xl z-[100] flex items-center justify-center p-4 opacity-0 pointer-events-none transition-all duration-500 active:opacity-100 active:pointer-events-auto">
-        <div class="w-full max-auto max-w-md bg-bg-surface/60 backdrop-blur-2xl border border-white/10 p-8 rounded-[2rem] shadow-2xl">
-            <!-- Login Mode -->
-            <div id="auth-login-mode">
-                <div class="text-center mb-8">
-                    <div class="w-16 h-16 bg-gradient-to-br from-primary to-secondary rounded-2xl flex items-center justify-center text-3xl text-white shadow-lg shadow-primary/20 mx-auto mb-4">
-                        <i class="ph-fill ph-lock-key"></i>
-                    </div>
-                    <h2 class="text-2xl font-bold">CRM PRO Access</h2>
-                    <p class="text-sm text-text-dim mt-2">Silakan login untuk mengakses dashboard.</p>
-                </div>
-                <form id="login-form" class="space-y-4">
-                    <div class="space-y-2">
-                        <label class="text-xs font-bold text-text-muted uppercase tracking-wider">Email Address</label>
-                        <input type="email" id="login-email" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 outline-none focus:border-primary transition-colors" placeholder="nama@email.com" required>
-                    </div>
-                    <div class="space-y-2">
-                        <label class="text-xs font-bold text-text-muted uppercase tracking-wider">Password</label>
-                        <input type="password" id="login-password" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 outline-none focus:border-primary transition-colors" placeholder="••••••••" required>
-                        <div class="text-right">
-                            <a href="#" id="go-to-reset" class="text-xs text-text-dim hover:text-primary transition-colors">Lupa Password?</a>
-                        </div>
-                    </div>
-                    <button type="submit" class="w-full bg-primary hover:bg-primary/90 text-white font-bold py-4 rounded-xl flex items-center justify-center gap-2 shadow-lg shadow-primary/20 transition-all active:scale-95">
-                        <i class="ph ph-sign-in"></i>
-                        Login ke Dashboard
-                    </button>
-                </form>
-                <p class="text-center text-sm text-text-dim mt-6">Belum punya akun? <a href="#" id="go-to-signup" class="text-primary font-bold hover:underline">Daftar Sekarang</a></p>
-            </div>
-
-            <!-- Sign Up Mode -->
-            <div id="auth-signup-mode" class="hidden">
-                <div class="text-center mb-8">
-                    <div class="w-16 h-16 bg-gradient-to-br from-secondary to-primary rounded-2xl flex items-center justify-center text-3xl text-white shadow-lg shadow-secondary/20 mx-auto mb-4">
-                        <i class="ph-fill ph-user-plus"></i>
-                    </div>
-                    <h2 class="text-2xl font-bold">Buat Akun Baru</h2>
-                    <p class="text-sm text-text-dim mt-2">Daftar untuk mulai mengelola CRM Anda.</p>
-                </div>
-                <form id="signup-form" class="space-y-4">
-                    <div class="space-y-2">
-                        <label class="text-xs font-bold text-text-muted uppercase tracking-wider">Email Address</label>
-                        <input type="email" id="signup-email" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 outline-none focus:border-primary transition-colors" placeholder="nama@email.com" required>
-                    </div>
-                    <div class="space-y-2">
-                        <label class="text-xs font-bold text-text-muted uppercase tracking-wider">Create Password</label>
-                        <input type="password" id="signup-password" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 outline-none focus:border-primary transition-colors" placeholder="Min. 6 karakter" required minlength="6">
-                    </div>
-                    <button type="submit" class="w-full bg-primary hover:bg-primary/90 text-white font-bold py-4 rounded-xl flex items-center justify-center gap-2 shadow-lg shadow-primary/20 transition-all active:scale-95">
-                        <i class="ph ph-user-plus"></i>
-                        Daftar Akun
-                    </button>
-                </form>
-                <p class="text-center text-sm text-text-dim mt-6">Sudah punya akun? <a href="#" id="go-to-login" class="text-primary font-bold hover:underline">Kembali Login</a></p>
-            </div>
+    <div id="login-overlay" class="fixed inset-0 bg-bg-deep/40 backdrop-blur-md z-[100] flex items-center justify-center p-4 opacity-0 pointer-events-none transition-all duration-500 [&.active]:opacity-100 [&.active]:pointer-events-auto">
+        <div class="w-full max-w-md bg-white/5 backdrop-blur-3xl border border-white/10 p-8 rounded-[2.5rem] shadow-2xl relative overflow-hidden group">
+            <!-- Decorative Glow -->
+            <div class="absolute -top-24 -right-24 w-48 h-48 bg-primary/20 blur-3xl rounded-full group-hover:bg-primary/30 transition-all duration-700"></div>
             
-            <p id="auth-error" class="text-center text-churn text-xs mt-4"></p>
+            <div class="relative z-10">
+                <!-- Login Mode -->
+                <div id="auth-login-mode">
+                    <div class="text-center mb-8">
+                        <div class="w-16 h-16 bg-gradient-to-br from-primary to-secondary rounded-2xl flex items-center justify-center text-3xl text-white shadow-xl shadow-primary/20 mx-auto mb-4 active:scale-90 transition-transform">
+                            <i class="ph-fill ph-lock-key"></i>
+                        </div>
+                        <h2 class="text-2xl font-bold tracking-tight">CRM PRO Access</h2>
+                        <p class="text-xs text-text-dim mt-2 uppercase tracking-widest font-medium opacity-60">Silakan login untuk mengakses dashboard</p>
+                    </div>
+                    <form id="login-form" class="space-y-4">
+                        <div class="space-y-2">
+                            <label class="text-[10px] font-bold text-text-dim uppercase tracking-[0.2em] ml-1">Email Address</label>
+                            <input type="email" id="login-email" class="w-full bg-white/5 border border-white/10 rounded-2xl px-5 py-4 outline-none focus:border-primary/50 focus:bg-white/10 transition-all placeholder:text-white/10" placeholder="nama@email.com" required>
+                        </div>
+                        <div class="space-y-2">
+                            <div class="flex justify-between items-center px-1">
+                                <label class="text-[10px] font-bold text-text-dim uppercase tracking-[0.2em]">Password</label>
+                                <a href="#" id="go-to-reset" class="text-[10px] text-primary hover:underline font-bold">Lupa Password?</a>
+                            </div>
+                            <input type="password" id="login-password" class="w-full bg-white/5 border border-white/10 rounded-2xl px-5 py-4 outline-none focus:border-primary/50 focus:bg-white/10 transition-all placeholder:text-white/10" placeholder="••••••••" required>
+                        </div>
+                        <button type="submit" class="w-full bg-primary hover:bg-primary-hover text-white font-bold py-4 rounded-2xl flex items-center justify-center gap-3 shadow-xl shadow-primary/20 transition-all active:scale-[0.98]">
+                            <i class="ph ph-sign-in text-lg"></i>
+                            Login ke Dashboard
+                        </button>
+                    </form>
+                    <p class="text-center text-sm text-text-dim mt-8">
+                        Belum punya akun? 
+                        <a href="#" id="go-to-signup" class="text-primary font-bold hover:underline">Daftar Sekarang</a>
+                    </p>
+                </div>
+
+                <!-- Sign Up Mode -->
+                <div id="auth-signup-mode" class="hidden">
+                    <div class="text-center mb-8">
+                        <div class="w-16 h-16 bg-gradient-to-br from-secondary to-primary rounded-2xl flex items-center justify-center text-3xl text-white shadow-xl shadow-secondary/20 mx-auto mb-4">
+                            <i class="ph-fill ph-user-plus"></i>
+                        </div>
+                        <h2 class="text-2xl font-bold tracking-tight">Buat Akun Baru</h2>
+                        <p class="text-xs text-text-dim mt-2 uppercase tracking-widest font-medium opacity-60">Daftar untuk mulai mengelola CRM Anda</p>
+                    </div>
+                    <form id="signup-form" class="space-y-4">
+                        <div class="space-y-2">
+                            <label class="text-[10px] font-bold text-text-dim uppercase tracking-[0.2em] ml-1">Email Address</label>
+                            <input type="email" id="signup-email" class="w-full bg-white/5 border border-white/10 rounded-2xl px-5 py-4 outline-none focus:border-primary/50 focus:bg-white/10 transition-all placeholder:text-white/10" placeholder="nama@email.com" required>
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-[10px] font-bold text-text-dim uppercase tracking-[0.2em] ml-1">Create Password</label>
+                            <input type="password" id="signup-password" class="w-full bg-white/5 border border-white/10 rounded-2xl px-5 py-4 outline-none focus:border-primary/50 focus:bg-white/10 transition-all placeholder:text-white/10" placeholder="Min. 6 karakter" required minlength="6">
+                        </div>
+                        <button type="submit" class="w-full bg-primary hover:bg-primary-hover text-white font-bold py-4 rounded-2xl flex items-center justify-center gap-3 shadow-xl shadow-primary/20 transition-all active:scale-[0.98]">
+                            <i class="ph ph-user-plus text-lg"></i>
+                            Daftar Akun
+                        </button>
+                    </form>
+                    <p class="text-center text-sm text-text-dim mt-8">
+                        Sudah punya akun? 
+                        <a href="#" id="go-to-login" class="text-primary font-bold hover:underline">Kembali Login</a>
+                    </p>
+                </div>
+                
+                <div class="mt-8 pt-6 border-t border-white/5 text-center">
+                    <p id="auth-error" class="text-churn text-xs mb-4 min-h-[1rem] font-medium"></p>
+                    <button id="btn-reset-config" class="text-[9px] text-white/20 hover:text-white/60 transition-colors uppercase tracking-[0.3em] font-bold">
+                        Reset Konfigurasi Supabase
+                    </button>
+                </div>
+            </div>
         </div>
     </div>
 
