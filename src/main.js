@@ -642,7 +642,8 @@ function exportToExcel() {
         { wch: 50 }  // Strategi
     ];
 
-    const timestamp = new Date().toISOString().split('T')[0];
+    const now = new Date();
+    const timestamp = now.toISOString().split('T')[0] + '_' + now.getHours() + now.getMinutes() + now.getSeconds();
     XLSX.writeFile(workbook, `CRM_Broadcast_${filter}_${timestamp}.xlsx`);
 }
 
