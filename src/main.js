@@ -624,8 +624,12 @@ async function fetchInterpreterData() {
     try {
         const { data, error } = await getSupabase().from('rfm_interpreter').select('*');
         if (error) {
-            console.warn("Table rfm_interpreter not found, using empty array.");
+            console.warn("Table rfm_interpreter error:", error.message);
             return [];
+        }
+        console.log("Interpreter Data Loaded:", data.length, "rows");
+        if (data.length === 0) {
+            showToast("Tabel interpreter kosong. Pastikan sudah menjalankan SQL Seed.", "warning");
         }
         return data || [];
     } catch (err) {
