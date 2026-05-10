@@ -109,6 +109,10 @@
                             <i class="ph ph-whatsapp-logo"></i>
                             <span>Master Broadcast</span>
                         </li>
+                        <li class="nav-item" data-target="interpreter-view">
+                            <i class="ph ph-brain"></i>
+                            <span>RFM Interpreter</span>
+                        </li>
                     </ul>
                 </div>
                 <div class="nav-group">
@@ -146,6 +150,9 @@
             <!-- Top Bar -->
             <header class="top-bar">
                 <div class="header-left">
+                    <button id="btn-menu-mobile" class="menu-mobile-btn">
+                        <i class="ph ph-list"></i>
+                    </button>
                     <div style="display: flex; align-items: center; gap: 15px;">
                         <div>
                             <h1 id="view-title">Dashboard RFM</h1>
@@ -324,6 +331,88 @@
                                 <button class="pagination-btn" id="btn-broadcast-prev" disabled><i class="ph ph-caret-left"></i></button>
                                 <span id="broadcast-page">Hal 1</span>
                                 <button class="pagination-btn" id="btn-broadcast-next" disabled><i class="ph ph-caret-right"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- RFM Interpreter View -->
+                <section id="interpreter-view" class="view-section">
+                    <div class="interpreter-container">
+                        <div class="interpreter-hero">
+                            <h1>RFM Interpreter</h1>
+                            <p>Understand customer behavior through RFM analysis and CRM insights.</p>
+                        </div>
+                        
+                        <div class="interpreter-main">
+                            <!-- Input Section -->
+                            <div class="interpreter-input-card glass">
+                                <div class="card-header">
+                                    <div class="header-title">
+                                        <h2>Analyze RFM Code</h2>
+                                        <p>Input 3-digit code (Recency, Frequency, Monetary)</p>
+                                    </div>
+                                </div>
+                                <div class="interpreter-form">
+                                    <div class="code-input-wrapper">
+                                        <input type="text" id="rfm-input" placeholder="e.g. 333" maxlength="3" autocomplete="off">
+                                        <button id="btn-analyze-rfm" class="action-btn primary">
+                                            <i class="ph ph-sparkle"></i> Analyze
+                                        </button>
+                                    </div>
+                                    <div id="interpreter-error" class="error-msg"></div>
+                                </div>
+                            </div>
+
+                            <!-- Result Section -->
+                            <div id="interpreter-result" class="interpreter-result-card glass" style="display: none;">
+                                <!-- Content dynamically rendered by JS -->
+                            </div>
+
+                            <!-- Placeholder/Empty State -->
+                            <div id="interpreter-placeholder" class="interpreter-placeholder glass">
+                                <div class="placeholder-icon">
+                                    <i class="ph ph-brain"></i>
+                                </div>
+                                <h3>Ready to Analyze</h3>
+                                <p>Enter a 3-digit RFM code to reveal customer insights and strategies.</p>
+                            </div>
+                        </div>
+
+                        <!-- Reference Table -->
+                        <div class="data-card glass" style="margin-top: 40px;">
+                            <div class="card-header">
+                                <div class="header-title">
+                                    <h2>RFM Reference Guide</h2>
+                                    <p>Comprehensive list of all 27 RFM combinations and their segments.</p>
+                                </div>
+                                <div class="header-actions" style="display: flex; gap: 12px; align-items: center;">
+                                    <select id="filter-interpreter-segment" class="glass-select" style="width: 150px; height: 36px; font-size: 12px;">
+                                        <option value="all">Semua Segmen</option>
+                                        <option value="Core">Core</option>
+                                        <option value="Growth">Growth</option>
+                                        <option value="Passive">Passive</option>
+                                        <option value="Churn">Churn</option>
+                                    </select>
+                                    <div class="search-box" style="width: 200px;">
+                                        <i class="ph ph-magnifying-glass"></i>
+                                        <input type="text" id="search-interpreter" placeholder="Cari kode..." style="width: 100%;">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="table-container">
+                                <table id="table-interpreter">
+                                    <thead>
+                                        <tr>
+                                            <th>RFM</th>
+                                            <th>Segment</th>
+                                            <th>Lifecycle</th>
+                                            <th>Health</th>
+                                            <th>Strategy</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="interpreter-reference-body"></tbody>
+                                </table>
                             </div>
                         </div>
                     </div>

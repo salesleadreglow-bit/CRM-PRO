@@ -7,6 +7,7 @@ import * as XLSX from 'xlsx';
 let state = {
     transactions: [],
     rfmData: [],
+    interpreterData: [],
     settings: {
         supabaseUrl: localStorage.getItem('supabaseUrl') || 'https://vedzvlsjxmokairstjou.supabase.co',
         supabaseKey: localStorage.getItem('supabaseKey') || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZlZHp2bHNqeG1va2FpcnN0am91Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgwNDE5MDQsImV4cCI6MjA5MzYxNzkwNH0.h5d35pLcy1bcqcevXq_Hxtv423zdL4_9XApoLVUV9vQ',
@@ -70,14 +71,32 @@ document.addEventListener('DOMContentLoaded', async () => {
 });
 
 async function checkAuth() {
+    console.log("Starting checkAuth...");
     showLoader('Mengecek sesi login...');
-    const { data: { session } } = await getSession();
-    
-    if (session) {
-        document.getElementById('login-overlay').classList.remove('active');
-        updateUserInfo(session.user);
-        await refreshData();
-    } else {
+    try {
+        console.log("Calling getSession...");
+        const { data, error } = await getSession();
+        if (error) {
+            console.error("Auth error:", error);
+            throw error;
+        }
+        
+        const session = data?.session;
+        console.log("Session data:", session);
+        
+        if (session) {
+            console.log("User logged in:", session.user.email);
+            document.getElementById('login-overlay').classList.remove('active');
+            updateUserInfo(session.user);
+            await refreshData();
+        } else {
+            console.log("No active session, showing login.");
+            document.getElementById('login-overlay').classList.add('active');
+            hideLoader();
+        }
+    } catch (err) {
+        console.error("Critical auth check failure:", err);
+        showToast("Gagal mengecek sesi: " + err.message, "error");
         document.getElementById('login-overlay').classList.add('active');
         hideLoader();
     }
@@ -97,9 +116,11 @@ async function refreshData() {
         const data = await fetchTransactions();
         state.transactions = data;
         state.rfmData = calculateRFM(data, state.settings);
+        state.interpreterData = await fetchInterpreterData();
         
         renderDashboard();
         renderBroadcast();
+        renderInterpreterReference();
         updateConnectionStatus(true);
     } catch (err) {
         console.error(err);
@@ -204,13 +225,28 @@ function renderBroadcast() {
 function setupNavigation() {
     const sidebar = document.getElementById('main-sidebar');
     const overlay = document.getElementById('sidebar-overlay');
+    const btnMenuMobile = document.getElementById('btn-menu-mobile');
+
+    const openSidebar = () => {
+        sidebar.classList.add('active');
+        overlay.classList.add('active');
+    };
+
+    const closeSidebar = () => {
+        sidebar.classList.remove('active');
+        overlay.classList.remove('active');
+    };
 
     navItems.forEach(item => {
         item.addEventListener('click', () => {
             const target = item.dataset.target;
             switchView(target);
+            if (window.innerWidth <= 1024) closeSidebar();
         });
     });
+
+    if (btnMenuMobile) btnMenuMobile.addEventListener('click', openSidebar);
+    if (overlay) overlay.addEventListener('click', closeSidebar);
 }
 
 function switchView(target) {
@@ -225,6 +261,7 @@ function switchView(target) {
         'dashboard-view': 'Dashboard RFM',
         'upload-view': 'Upload Data',
         'broadcast-view': 'Master Broadcast',
+        'interpreter-view': 'RFM Interpreter',
         'settings-view': 'Konfigurasi Sistem'
     };
     document.getElementById('view-title').textContent = names[target] || 'CRM Dashboard';
@@ -306,6 +343,14 @@ function setupEventListeners() {
             location.reload(); // Tetap reload jika error agar kembali ke login
         }
     });
+
+    // Interpreter
+    document.getElementById('btn-analyze-rfm').addEventListener('click', analyzeRFM);
+    document.getElementById('rfm-input').addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') analyzeRFM();
+    });
+    document.getElementById('search-interpreter').addEventListener('input', renderInterpreterReference);
+    document.getElementById('filter-interpreter-segment').addEventListener('change', renderInterpreterReference);
 
     // Upload
     const fileInput = document.getElementById('file-input');
@@ -450,4 +495,141 @@ function exportToExcel() {
     const timestamp = now.toISOString().split('T')[0] + '_' + now.getHours() + now.getMinutes();
     XLSX.writeFile(workbook, `CRM_Broadcast_${filter}_${timestamp}.xlsx`);
     showToast('Export Excel berhasil!');
+}
+
+// --- RFM Interpreter Logic ---
+function analyzeRFM() {
+    const input = document.getElementById('rfm-input').value.trim();
+    const errorEl = document.getElementById('interpreter-error');
+    const resultEl = document.getElementById('interpreter-result');
+    const placeholderEl = document.getElementById('interpreter-placeholder');
+
+    errorEl.textContent = '';
+
+    // Validation
+    if (!/^[1-3]{3}$/.test(input)) {
+        errorEl.textContent = 'Kode harus 3 digit angka 1-3 (contoh: 333)';
+        resultEl.style.display = 'none';
+        placeholderEl.style.display = 'flex';
+        return;
+    }
+
+    const data = state.interpreterData.find(d => d.rfm_code === input);
+    
+    if (!data) {
+        errorEl.textContent = 'Data interpretasi tidak ditemukan.';
+        return;
+    }
+
+    placeholderEl.style.display = 'none';
+    resultEl.style.display = 'block';
+
+    renderInterpreterResult(data);
+}
+
+function renderInterpreterResult(data) {
+    const resultEl = document.getElementById('interpreter-result');
+    const segmentClass = data.segment.toLowerCase();
+
+    resultEl.innerHTML = `
+        <div class="result-header">
+            <div class="result-badge-group">
+                <span class="result-code-badge">${data.rfm_code}</span>
+                <span class="badge badge-${segmentClass}" style="font-size: 14px; padding: 6px 12px;">${data.segment}</span>
+            </div>
+            <div style="text-align: right;">
+                <span class="insight-label">Customer Health</span>
+                <span class="insight-value" style="font-size: 18px; color: var(--core)">${data.customer_health}</span>
+            </div>
+        </div>
+
+        <div class="insight-grid">
+            <div class="insight-item">
+                <span class="insight-label">Lifecycle Stage</span>
+                <span class="insight-value">${data.lifecycle_stage}</span>
+            </div>
+            <div class="insight-item">
+                <span class="insight-label">Risk Level</span>
+                <span class="insight-value" style="color: ${data.risk_level.includes('High') ? 'var(--churn)' : 'var(--core)'}">${data.risk_level}</span>
+            </div>
+            <div class="insight-item">
+                <span class="insight-label">Customer Potential</span>
+                <span class="insight-value">${data.customer_potential}</span>
+            </div>
+        </div>
+
+        <div class="explanation-section">
+            <h3>Customer Behavior</h3>
+            <p class="explanation-text">${data.customer_behavior}</p>
+        </div>
+
+        <div class="explanation-section">
+            <h3>Detailed Explanation</h3>
+            <p class="explanation-text">${data.detailed_explanation}</p>
+        </div>
+
+        <div class="explanation-section" style="background: rgba(99, 102, 241, 0.05); padding: 20px; border-radius: 12px; border: 1px dashed var(--primary);">
+            <h3><i class="ph ph-lightbulb"></i> Recommended CRM Strategy</h3>
+            <p class="explanation-text" style="color: var(--text-main); font-weight: 500;">${data.crm_strategy}</p>
+        </div>
+
+        <div class="breakdown-grid">
+            <div class="breakdown-item">
+                <h4><i class="ph ph-calendar"></i> Recency (${data.rfm_code[0]})</h4>
+                <p>${data.recency_explanation}</p>
+            </div>
+            <div class="breakdown-item">
+                <h4><i class="ph ph-shopping-cart"></i> Frequency (${data.rfm_code[1]})</h4>
+                <p>${data.frequency_explanation}</p>
+            </div>
+            <div class="breakdown-item">
+                <h4><i class="ph ph-wallet"></i> Monetary (${data.rfm_code[2]})</h4>
+                <p>${data.monetary_explanation}</p>
+            </div>
+        </div>
+    `;
+}
+
+function renderInterpreterReference() {
+    const searchTerm = document.getElementById('search-interpreter').value.toLowerCase();
+    const segmentFilter = document.getElementById('filter-interpreter-segment').value;
+    const tbody = document.getElementById('interpreter-reference-body');
+
+    if (!tbody) return;
+
+    let filtered = state.interpreterData.filter(d => d.rfm_code.includes(searchTerm));
+    if (segmentFilter !== 'all') {
+        filtered = filtered.filter(d => d.segment === segmentFilter);
+    }
+
+    // Sort by code
+    filtered.sort((a, b) => b.rfm_code.localeCompare(a.rfm_code));
+
+    tbody.innerHTML = '';
+    filtered.forEach(data => {
+        const tr = document.createElement('tr');
+        const segmentClass = data.segment.toLowerCase();
+        tr.innerHTML = `
+            <td style="font-weight: 800; color: var(--primary); font-size: 14px;">${data.rfm_code}</td>
+            <td><span class="badge badge-${segmentClass}">${data.segment}</span></td>
+            <td>${data.lifecycle_stage}</td>
+            <td>${data.customer_health}</td>
+            <td style="font-size: 11px; color: var(--text-dim); white-space: normal; line-height: 1.4;">${data.crm_strategy}</td>
+        `;
+        tbody.appendChild(tr);
+    });
+}
+
+async function fetchInterpreterData() {
+    try {
+        const { data, error } = await getSupabase().from('rfm_interpreter').select('*');
+        if (error) {
+            console.warn("Table rfm_interpreter not found, using empty array.");
+            return [];
+        }
+        return data || [];
+    } catch (err) {
+        console.error("Error fetching interpreter data:", err);
+        return [];
+    }
 }
